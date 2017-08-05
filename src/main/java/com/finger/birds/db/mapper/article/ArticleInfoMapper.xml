@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.finger.birds.db.dao.article.ArticleInfoDao">
+
+	<select id="setUTF8mb4">
+		SET NAMES utf8mb4
+	</select>
+	
+	<select id="setUTF8">
+		SET NAMES utf8
+	</select>
+	<insert id="addComment" parameterType="com.finger.birds.model.article.ArticleComment" useGeneratedKeys="true" keyProperty="id">
+		<selectKey resultType="long" keyProperty="id" order="AFTER" >
+	        SELECT LAST_INSERT_ID() AS id
+	    </selectKey>
+		INSERT INTO article_comment (`userId`, `tuserId`, `articleId`, `content`, `starTimes`, `createTime`, `updateTime`, `isTop`, `isDelete`) 
+					VALUES (#{userId}, #{tuserId}, #{articleId}, #{content}, 0, now(), now(), 0, 0)
+	</insert>
+	
+	<select id="getIdByBean" resultType="java.lang.Long">
+		SELECT MAX(id) from article_comment
+		where userId = #{userId} and articleId = #{articleId}
+	</select>
+	
+	<insert id="addStar">
+		INSERT INTO article_star (`userId`, `articleId`, `createTime`, `updateTime`) 
+					VALUES (#{userId}, #{articleId}, now(), now())
+	</insert>
+	
+	<insert id="addView">
+		INSERT INTO article_view (`userId`, `articleId`, `createTime`, `updateTime`) 
+					VALUES (#{userId}, #{articleId}, now(), now())
+	</insert>
+	
+	<insert id="addCommentStar">
+		INSERT INTO article_comment_star (`userId`, `commentId`, `createTime`, `updateTime`) 
+					VALUES (#{userId}, #{commentId}, now(), now())
+	</insert>
+	
+	<update id="deleteComment" parameterType="java.lang.Long">
+		update article_comment set idDelete=1
+		 where id = #{id,jdbcType=BIGINT}
+	</update>
+	
+	<delete id="deleteStar" parameterType="java.lang.Long">
+		delete from article_star 
+		where userId = #{userId,jdbcType=BIGINT} 
+			and articleId = #{articleId,jdbcType=BIGINT}
+	</delete>
+	
+	<delete id="deleteCommentStar" parameterType="java.lang.Long">
+		delete from article_comment_star 
+		where userId = #{userId,jdbcType=BIGINT} 
+			and commentId = #{commentId,jdbcType=BIGINT}
+	</delete>
+	
+	<update id="upView" parameterType="java.lang.Long">
+		update article set viewTimes = viewTimes + 1
+		where id = #{id,jdbcType=BIGINT} 
+	</update>
+	
+	 <update id="upStar" parameterType="java.lang.Long">
+		update article set starTimes = starTimes + 1
+		where id = #{id,jdbcType=BIGINT} 
+	</update>
+	
+	 <update id="downStar" parameterType="java.lang.Long">
+		update article set starTimes = starTimes - 1
+		where id = #{id,jdbcType=BIGINT} 
+	</update>
+ 
+ 	<update id="upCommentStar" parameterType="java.lang.Long">
+		update article_comment set starTimes = starTimes + 1
+		where id = #{commentId,jdbcType=BIGINT} 
+	</update>
+	
+	<update id="downCommentStar" parameterType="java.lang.Long">
+		update article_comment set starTimes = starTimes - 1
+		where id = #{commentId,jdbcType=BIGINT} 
+	</update>
+	
+	<update id="upCommentTimes" parameterType="java.lang.Long">
+		update article set commentTimes = commentTimes + 1
+		where id = #{id,jdbcType=BIGINT} 
+	</update>
+	
+	<update id="downCommentTimes" parameterType="java.lang.Long">
+		update article set commentTimes = commentTimes - 1
+		where id = #{id,jdbcType=BIGINT} 
+	</update>
+	
+	<select id="getArticleStar" resultType="com.finger.birds.model.article.ArticleStar">
+		SELECT * from article_star
+		where userId = #{userId} and articleId = #{articleId}
+		limit 0,1
+	</select>
+	
+	<select id="getArticleCommentStar" resultType="com.finger.birds.model.article.ArticleCommentStar">
+		SELECT * from article_comment_star
+		where userId = #{userId} and commentId = #{commentId}
+		limit 0,1
+	</select>
+	
+	<select id="getArticleCommentList" resultType="com.finger.birds.db.po.article.ArticleCommentPO">
+		SELECT 
+			ac.*,
+			ui1.nickname nickname,
+			ui1.headImage headImage,
+			ui2.nickname tnickname,
+			ui2.headImage theadImage
+		FROM article_comment ac
+		LEFT JOIN `user_info` ui1 ON ac.userId = ui1.userId
+		LEFT JOIN `user_info` ui2 ON ac.tuserId = ui2.userId
+		WHERE ac.isDelete=0
+			<if test="bean.articleId != null">
+				AND ac.articleId = #{bean.articleId} 
+			</if>
+			ORDER BY ac.isTop DESC,ac.createTime ASC
+		<if test="start!=null and pageSize!=null">
+			LIMIT #{start}, #{pageSize}
+		</if>
+	</select>
+	
+	<select id="getArticleCommentListCount" resultType="java.lang.Integer">
+		SELECT 
+			count(1)
+		FROM article_comment
+		WHERE isDelete=0
+			<if test="bean.articleId != null">
+				AND articleId = #{bean.articleId} 
+			</if>
+	</select>
+		
+	<select id="getInfoByCommentId" resultType="com.finger.birds.db.po.article.ArticleIdInfoPO">
+		select 
+			a.userId articleUserId, 
+			a.id articleId,
+			ac.userId commentUserId,
+			ac.tuserId toUserId 
+		from article_comment ac
+			left join `article` a
+			on a.id = ac.articleId 
+		where ac.id = #{commentId}
+	</select>
+	
+</mapper>

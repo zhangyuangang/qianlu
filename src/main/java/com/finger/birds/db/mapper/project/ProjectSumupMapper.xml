@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.finger.birds.db.dao.project.ProjectSumupDao">
+    
+    <select id="getListForHPage" resultType="com.finger.birds.db.po.project.ProjectSumupListPO">
+    	SELECT 
+    		ps.id,
+			ui.`nickname` AS nickname,
+			ps.`name`,
+			ps.`desc`,
+			ps.`price`,
+			ps.exacts,
+			ps.`joins`,
+			ps.industryName,
+			ps.`professionName`,
+			ps.`refPrice`,
+			pra.`commentScore`,
+			ps.`companyName`
+		FROM 
+			project_sumup ps 
+		INNER JOIN `user` u ON ps.`userId` = u.`id`
+		INNER JOIN `user_info` ui ON ui.`userId` = u.`id`
+		INNER JOIN project_ref_apply pra ON pra.`projectId` = ps.`projectId` AND pra.`status` > 0
+		LEFT JOIN project p ON p.id = ps.projectId
+		<if test="bean.chiziId != null">
+		INNER JOIN chizi_project cp ON (cp.projectId = p.id OR cp.sumupId = ps.id) AND cp.chiziId = #{bean.chiziId}
+		</if>
+		WHERE 1=1
+		<if test="bean.searchType == 0">
+		AND (ps.companyName LIKE CONCAT('%', #{bean.keyWords},'%') OR ps.professionName LIKE CONCAT('%', #{bean.keyWords},'%') OR ps.industryName LIKE CONCAT('%', #{bean.keyWords},'%') OR (ps.name LIKE CONCAT('%', #{bean.keyWords},'%')))
+		</if>
+		<if test="bean.searchType == 1">
+		AND (ps.companyName LIKE CONCAT('%', #{bean.keyWords},'%'))
+		</if>
+		<if test="bean.searchType == 2">
+		AND ps.professionName LIKE CONCAT('%', #{bean.keyWords},'%')
+		</if>
+		<if test="bean.searchType == 3">
+		AND ps.industryName LIKE CONCAT('%', #{bean.keyWords},'%')
+		</if>
+		ORDER BY ps.`createTime` DESC
+		<if test="start!=null and pageSize!=null">
+			LIMIT #{start}, #{pageSize}
+		</if>
+    </select>
+    
+    <select id="getListForHPageCount" resultType="java.lang.Integer">
+    	SELECT 
+    		COUNT(1)
+		FROM 
+			project_sumup ps 
+		INNER JOIN `user` u ON ps.`userId` = u.`id`
+		INNER JOIN `user_info` ui ON ui.`userId` = u.`id`
+		INNER JOIN project_ref_apply pra ON pra.`projectId` = ps.`projectId` AND pra.`status` > 0
+		LEFT JOIN project p ON p.id = ps.projectId
+		WHERE 1=1
+		<if test="bean.chiziId != null">
+		INNER JOIN chizi_project cp ON (cp.projectId = p.id OR cp.sumupId = ps.id) AND cp.chiziId = #{bean.chiziId}
+		</if>
+		<if test="bean.searchType == 0">
+		AND (ps.companyName LIKE CONCAT('%', #{bean.keyWords},'%') OR ps.professionName LIKE CONCAT('%', #{bean.keyWords},'%') OR ps.industryName LIKE CONCAT('%', #{bean.keyWords},'%') OR (ps.name LIKE CONCAT('%', #{bean.keyWords},'%')))
+		</if>
+		<if test="bean.searchType == 1">
+		AND (ps.companyName LIKE CONCAT('%', #{bean.keyWords},'%'))
+		</if>
+		<if test="bean.searchType == 2">
+		AND ps.professionName LIKE CONCAT('%', #{bean.keyWords},'%')
+		</if>
+		<if test="bean.searchType == 3">
+		AND ps.industryName LIKE CONCAT('%', #{bean.keyWords},'%')
+		</if>
+    </select>
+    
+    <insert id="save" parameterType="com.finger.birds.model.project.ProjectSumup" keyProperty="id" useGeneratedKeys="true">
+		INSERT INTO `project_sumup` (`id`,`projectId`, `applyId`, `price`, `userId`, `createTime`, `updateTime`, `industryName`, `professionName`, `companyName`, `refPrice`, `name`, `desc`) VALUES
+		(null,#{projectId},#{applyId},#{price},#{userId},now(),now(), #{industryName}, #{professionName}, #{companyName}, #{refPrice}, #{name}, #{desc});
+	</insert>
+	
+	<insert id="detailBatchSave" parameterType="java.util.List">
+		INSERT INTO project_sumup_detail (`applyDetailId`, `content`, `title`, `imgUrl`, `sumupId`) VALUES
+		<foreach collection="list" item="item" index="index" separator="," >
+		(#{item.applyDetailId}, #{item.content}, #{item.title}, #{item.imgUrl}, #{item.sumupId})
+		</foreach>
+	</insert>
+	
+	<select id="checkSumup" resultType="java.lang.Long">
+		SELECT
+		DISTINCT
+			ps.id
+		FROM project_sumup ps 
+		LEFT JOIN project p ON p.`id` = ps.`projectId`
+		LEFT JOIN project_sumup_user psu ON psu.`sumupId` = ps.`id`
+		WHERE (psu.`userId` = #{userId} OR p.`userId` = #{userId} OR ps.`userId` = #{userId}) AND ps.`id` = #{sumupId}
+	</select>
+	
+	<select id="checkExact" resultType="java.lang.Long">
+		SELECT
+			p.id
+		FROM project_sumup ps 
+		INNER JOIN project p ON p.`id` = ps.`projectId`
+		INNER JOIN project_sumup_user psu ON psu.`sumupId` = ps.`id`
+		WHERE ps.`id` = #{sumupId} AND psu.userId = #{userId}
+	</select>
+	
+	<select id="checkIsSelf" resultType="int">
+		SELECT COUNT(1)
+			FROM project_sumup ps
+		INNER JOIN project_ref_apply pra ON pra.projectId = ps.projectId
+		LEFT JOIN project p ON p.`id` = ps.`projectId`
+		LEFT JOIN project_apply pa ON pa.id = pra.applyId
+			WHERE (p.`userId` = #{userId} OR ps.`userId` = #{userId}) AND ps.`id` = #{sumupId}
+	</select>
+	
+	<select id="getSumupPOById" resultType="com.finger.birds.db.po.project.ProjectSumupPO" parameterType="java.lang.Long">
+		SELECT
+			ps.*,
+			pra.`commentScore`,
+			<if test="userId != null">
+			psu.isExact,
+			</if>
+			p.userId AS puserId,
+			IFNULL(pa.userId, ps.userId) AS auserId
+		FROM project_sumup ps 
+		INNER JOIN project_ref_apply pra ON pra.projectId = ps.projectId
+		<if test="userId != null">
+		INNER JOIN project_sumup_user psu ON psu.sumupId = ps.id AND psu.userId = #{userId}
+		</if>
+		LEFT JOIN project p ON p.`id` = ps.`projectId`
+		LEFT JOIN project_apply pa ON pra.applyId = pa.id
+		WHERE ps.`id` = #{id}
+	</select>
+	
+	<select id="getById" resultType="com.finger.birds.model.project.ProjectSumup">
+		SELECT * FROM project_sumup WHERE id = #{id}
+	</select>
+	
+	<select id="getSumupDetail" resultType="com.finger.birds.model.project.ProjectSumupDetail">
+		SELECT
+			*
+		FROM project_sumup_detail
+		WHERE sumupId = #{id}
+	</select>
+	
+	<update id="updateById">
+		UPDATE project_sumup SET updateTime = now()
+		<if test="type == 1">
+		,joins = joins + 1
+		</if>
+		<if test="type == 2">
+		,exacts = exacts + 1
+		</if>
+		WHERE id = #{id}
+	</update>
+	
+	<update id="updateSumupUser">
+		UPDATE project_sumup_user SET isExact = 1 WHERE sumupId = #{sumupId} AND userId = #{userId}
+	</update>
+	
+	<insert id="saveSumupUser" parameterType="com.finger.birds.model.project.ProjectSumupUser">
+		INSERT INTO project_sumup_user (sumupId, userId, createTime) VALUES (#{sumupId}, #{userId}, now())
+	</insert>
+</mapper>

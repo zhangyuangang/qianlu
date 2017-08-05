@@ -1,0 +1,61 @@
+html,body{height: 100%;overflow: hidden;-webkit-tap-highlight-color:transparent;outline: none;-webkit-user-select:none;background: #eee;}
+body{display: -webkit-box;-webkit-box-orient: vertical;height: 100%;}
+.wrapper{-webkit-box-flex: 1;position: relative;overflow:auto;-webkit-overflow-scrolling;}
+.scroll{overflow: hidden;}
+.kong{width: 100%;height: 2rem;}
+.kong1{width: 100%;height: .8rem;}
+.header{width: 100%;min-height: 5rem;background: #fff;}
+.tap{width:100%;background: #fff;}
+.tap_{width:90%;margin: 0 auto;display: flex;}
+.data{flex: 1;text-align: left;}
+.data b{font-size:1.125rem;margin-top: 1rem;display: block;}
+.data i{margin-left:-1%;display: block;margin-top:16%;font-size:0.9rem;}
+.data span{margin-left:-1%;display: block;margin-top:10%;font-size:0.9rem;}
+.text_{width:80%;}
+.text_ h3{font-size:1.25rem;margin-top:.7rem;margin-left:5%;font-family: "微软雅黑";}
+.text_ p{font-size:1rem;margin-left:5%;line-height: 1.5rem;color:#7C7C7C;margin-top:.5rem;}
+.chtainer{width: 90%;margin: 0 auto;height: auto;overflow: hidden;}
+.chtainer .timer{width: 100%;height: 3rem;text-align: center;margin: 0 auto;line-height: 3rem;}
+.timer p{font-size:.8rem;color:#c0c0c0;}
+.portrait_left{width:3rem;height:3rem;;border-radius: 100%;overflow: hidden;margin-top:.3rem;float:left;}
+.portrait_right{width:3rem;height:3rem;;border-radius: 100%;overflow: hidden;margin-top:.3rem;float:right;}
+.portrait_left:after{content: "";position:absolute;width: 21px;height: 21px;background: url(../../img/jiao.png) no-repeat;left:13.2%;top:-2.8px;}
+.portrait_right:after{content: "";position:absolute;width: 21px;height: 21px;background: url(../../img/lanjiao.png) no-repeat;right:13.2%;top:-2.8px;}
+.chtainer ul li{height: auto;width: 100%;overflow: hidden;position: relative;}
+.right{text-align: right;}
+.chtext_left{max-width: 70%;height: auto;background: #fff;border-radius: 2px;margin-left:4%;padding: .5rem .7rem;font-size:.98rem;color: #383838;display: inline-block;line-height: 1.5rem;}
+.chtext_right{max-width: 70%;height: auto;background: #daf0ff;border-radius: 2px;margin-right:4%;padding: .5rem .7rem;text-align: right;font-size:.98rem;color: #383838;display: inline-block;line-height: 1.3rem;}
+
+footer .as{flex: 1;background:none;outline:none;-webkit-tap-highlight-color:rgba(0,0,0,0);}
+.last{border-right: 1px solid #e5e5e5;}
+.as{text-align: center;}	    
+.nav{font-size:.7rem;color: #7c7c7c;display: block;line-height: 2.825rem;}
+footer{height: 2.825rem;position: relative;display: flex;background: #fff;border-top:1px solid #E5E5E5;}
+.ripple-container .ripple{
+background-color: rgba(243,245,247,0.4);
+animation: ripple 1.5s forwards cubic-bezier(0, 0, 0.2, 1);
+}
+@keyframes ripple {
+0% {
+transform: scale(0);
+opacity: 1;
+}
+80% {
+transform: scale(1);
+}
+100% {
+opacity: 0;
+}
+}	
+.chat{min-height: 2.825rem;position: relative;display: flex;background: #fff;border-top:1px solid #f3f5f7;}
+.chat textarea{width:80%;height: 2rem;background:#eee;border-radius: 6px;margin-left:1rem;font-size:1rem;outline: none;-webkit-appearance: none;box-sizing: border-box;vertical-align: middle;margin-top:.4rem;line-height:1rem;resize: none;overflow-y:scroll;text-align:justify;}
+.chat span{line-height: 2.825rem;color: #3e9fe9;display: inline-block;width: 16%;text-align: center;font-weight: 600;}	     
+
+@media only screen and (min-width: 768px) and (max-width: 2000px) {
+html,body{font-size:20px!important;}
+
+}
+@media only screen and (min-width: 320px) and (max-width: 320px) {
+html,body{font-size:15px!important;}   		
+
+}

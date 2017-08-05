@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>首页</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <link rel="stylesheet" href="../../../css/theme.css" />
+    <link rel="stylesheet" href="../../../css/jquery.mobile.custom.structure.min.css" />
+    <link rel="stylesheet" href="../../../css/jquery.mobile.custom.theme.min.css" />
+    <link rel="stylesheet" href="../../../css/bootstrap.css" />
+    <script type="text/javascript">
+        define = null;
+        require = null;
+    </script>
+    <script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js" type="text/javascript"></script>
+    <script src="../../../js/jquery.min.js"></script>
+    <script src="../../../js/jquery.mobile.custom.min.js"></script>
+    <script type='text/javascript' src='../../../js/webim/webim.config.js'></script>
+    <script type='text/javascript' src='../../../js/webim/sdk/strophe-1.2.8.js'></script>
+    <script type='text/javascript' src='../../../js/webim/sdk/websdk-1.4.10.js'></script>
+    <script src='../../../js/webim/webrtc/dist/adapter.js'></script>
+    <script src='../../../js/webim/webrtc/dist/webrtc-1.4.10.js'></script>
+ 	<style type="text/css">
+				html,body{height: 100%;overflow: hidden;-webkit-tap-highlight-color:transparent;outline: none;-webkit-user-select:none;background: #eee;}
+	    	body{display: -webkit-box;-webkit-box-orient: vertical;height: 100%;}
+	    	.wrapper{-webkit-box-flex: 1;position: relative;}
+	        .scroll{overflow: hidden;}
+	        .kong{width: 100%;height: 2rem;}
+	         .kong1{width: 100%;height: 1rem;}
+	        .header{width: 100%;height: auto;background: #fff;}
+	          .tap{width:100%;height: auto;background-color: #fff!important;}
+	        .tap_{width:90%;margin: 0 auto;display: flex;height: auto;}
+	        .data{flex: 1;text-align: left;}
+	        .data b{font-size:1.8rem;margin-top: 1rem;display: block;font-family: "微软雅黑";}
+	        .data i{margin-left:-1%;display: block;margin-top:16%;font-size:1.4rem;font-style: normal;}
+	      	.data span{margin-left:-1%;display: block;margin-top:10%;font-size:1.4rem;}
+	        .text_{width:80%;}
+	        .text_ h3{font-size:2rem;margin-top:1rem;margin-left:5%;font-family: "微软雅黑";}
+	        .text_ p{font-size:1.6rem;margin-left:5%;line-height: 2.4rem;color:#7C7C7C;margin-top:1.1rem;}
+	        .chtainer{width: 100%;margin: 0 auto;height: auto;overflow: hidden;}
+	        .chtainer .timer{width: 100%;height: 3rem;text-align: center;margin: 0 auto;line-height: 3rem;}
+	        .timer p{font-size:.8rem;color:#c0c0c0;}
+	        .portrait_left{width:3rem;height:3rem;;border-radius: 100%;overflow: hidden;margin-top:.3rem;float:left;}
+	           .portrait_right{width:3rem;height:3rem;;border-radius: 100%;overflow: hidden;margin-top:.3rem;float:right;}
+	        .portrait_left:after{content: "";position:absolute;width: 21px;height: 21px;background: url(../../../img/jiao.png) no-repeat;left:11.2%;top:7.2px;}
+	         .portrait_right:after{content: "";position:absolute;width: 21px;height: 21px;background: url(../../../img/lanjiao.png) no-repeat;right:13.2%;top:9.2px;}
+	        .chtainer ul li{height: auto;width: 100%;overflow: hidden;position: relative;}
+	        .right{text-align: right;}
+	        .chtext_left{max-width: 70%;height: auto;background: #fff;border-radius: 2px;margin-left:4%;padding: 1.2rem;font-size:1.5rem;color: #595959;display: inline-block;line-height: 1.8rem;}
+	        .chtext_right{max-width: 70%;height: auto;background: #daf0ff;border-radius: 2px;margin-right:4%;padding: .5rem .7rem;text-align: right;font-size:1.6rem;color: #595959;display: inline-block;line-height: 1.8rem;}
+	        /*.chtext_left p{display: inline-block;text-align: left;}
+	         .chtext_right p{display: inline-block;text-align: left;}*/
+	           footer .as{flex: 1;background:none;outline:none;-webkit-tap-highlight-color:rgba(0,0,0,0);}
+	           .last{border-right: 1px solid #e5e5e5;}
+	    	.as{text-align: center;}	    
+	    	.nav{font-size:.7rem;color: #7c7c7c;display: block;line-height: 2.825rem;}
+	    	footer{height: 2.825rem;position: relative;display: flex;background: #fff;border-top:1px solid #E5E5E5;}
+	    	.ripple-container .ripple{
+	            background-color: rgba(243,245,247,0.4);
+	            animation: ripple 1.5s forwards cubic-bezier(0, 0, 0.2, 1);
+	        }
+	        @keyframes ripple {
+	            0% {
+	                transform: scale(0);
+	                opacity: 1;
+	            }
+	            80% {
+	                transform: scale(1);
+	            }
+	            100% {
+	                opacity: 0;
+	            }
+	        }	
+	    	.chat{height: 2.825rem;position: relative;display: flex;background: #fff;border-top:1px solid #f3f5f7;}
+	    	 .chat input{width:80%;height: 2rem;background:#eee;border-radius: 6px;margin-left:1rem;font-size:.85rem;text-indent: 1rem;outline: none;-webkit-appearance: none;box-sizing: border-box;vertical-align: middle;margin-top:.4rem;}
+	    	 .release{font-weight: 600;line-height: 2.825rem;color: #96CEF8;display: inline-block;width: 16%;text-align: center;}	     
+		
+			 @media only screen and (min-width: 768px) and (max-width: 2000px) {
+    		html,body{font-size:20px!important;}
+    		/*.nav{font-size:.7rem;}
+    		.banq{font-size:0.7625rem;}
+    		footer{height: 3.4rem;;}
+    		.as img{margin-top:.45rem;}*/
+    		 
+    	}
+    	@media only screen and (min-width: 320px) and (max-width: 320px) {
+    		html,body{font-size:15px!important;}   		
+    		/*footer{height: 3.5rem;;}
+    		.as img{margin-top:.3rem;}
+    		.nav{font-size:.5rem;color: #7c7c7c;display: block;}
+    		  .text_one,.text_two,.text_three{height: auto;}*/
+    		
+    	}
+		</style>
+</head>
+<body>
+    <div data-role="page" id="" data-title="Inbox" data-url="" class="msnBg">
+        <div data-role="header" data-position="fixed" data-theme="b" class="header">
+        	 <div class="kong1"></div>
+          		<div class="tap">
+					<div class="tap_">
+							<div class="data">
+							<b>05/29</b>
+							<i>2017</i>
+							<span>宜谈职场</span>
+						</div>
+						<div class="text_">
+							<h3>万物终将分离</h3>
+							<p>这个世界上没有什么东西是跟随你直到永远的</p>
+						</div>
+					</div>
+				
+					</div>
+		      <div class="kong"></div>
+        </div>
+       
+        <!-- /header -->
+        
+        <div role="main" class="ui-content msnCls chtainer">
+            <ul id="msnPlace" class="touch msnPlace" data-role="listview" data-icon="false" >
+                
+                <li class="hisMsg">
+                	 <div class="portrait_left ">
+              					<img src="../../../img/toux1.png" width="100%" height="100%">
+              				</div>
+            				<!--text-->
+            				<div class="chtext_left">
+            					这个话题真是太好了～谢谢小助手和前路团队的策划～希望大家自觉维护网络环境
+            				</div>
+            					<div class="kong1"></div>
+                	
+                </li>
+               <li class="myMsg">
+            				<div class="portrait_right">
+              					<img src="../../../img/toux1.png" width="100%" height="100%">
+              				</div>
+            				<!--text-->
+            				<div class="chtext_right">
+            					多学习增长自己的专业技能
+            				</div>
+            				<div class="kong1"></div>
+            			</li>
+            </ul>
+        </div>
+        <!-- /content -->
+        <div data-role="footer" data-position="fixed" class="msnFooter">
+        	
+             <div class="msnTextarea"  id="sendMsgForm">
+                
+              
+                  <input type="text" id="sendMsg" name="word">
+                  <span class="micSubmitBtn release" id="micSubmitBtn" onclick="sendPrivateText()">发布</span>
+              
+
+          </div>
+            <!-- /navbar -->
+        </div>
+        <!-- /footer -->
+        <div class="voicelayermchild" id="voiceing"><div class="voicelayermcont"><div>开始录音...</div></div></div>
+    </div>
+    <!--webrtc-->
+    <script type="text/javascript">
+       /**
+     * Created by clock on 16-11-25.
+     */
+    var conn = {};
+    conn = new WebIM.connection({
+        isMultiLoginSessions: WebIM.config.isMultiLoginSessions,
+        https: typeof WebIM.config.https === 'boolean' ? WebIM.config.https : location.protocol === 'https:',
+        url: WebIM.config.xmppURL,
+        isAutoLogin: true,
+        heartBeatWait: WebIM.config.heartBeatWait,
+        autoReconnectNumMax: WebIM.config.autoReconnectNumMax,
+        autoReconnectInterval: WebIM.config.autoReconnectInterval
+    });
+
+    // listern，添加回调函数
+    conn.listen({
+        onOpened: function (message) {          //连接成功回调，连接成功后才可以发送消息
+            //如果isAutoLogin设置为false，那么必须手动设置上线，否则无法收消息
+            // 手动上线指的是调用conn.setPresence(); 在本例中，conn初始化时已将isAutoLogin设置为true
+            // 所以无需调用conn.setPresence();
+            console.log("opened");
+        },
+        onTextMessage: function (message) {
+            // 在此接收和处理消息，根据message.type区分消息来源，私聊或群组或聊天室
+           var _txtDom = '<li class="hisMsg"><div  class="hisFace"><img src=""></a><div class="msnCon chtext_left">'+message.data+'</div></li>';
+            $('#msnPlace').append(_txtDom);
+        },  //收到文本消息
+        onEmojiMessage: function (message) {
+            // 当为WebIM添加了Emoji属性后，若发送的消息含WebIM.Emoji里特定的字符串，connection就会自动将
+            // 这些字符串和其它文字按顺序组合成一个数组，每一个数组元素的结构为{type: 'emoji(或者txt)', data:''}
+            // 当type='emoji'时，data表示表情图像的路径，当type='txt'时，data表示文本消息
+            console.log('Emoji');
+            var data = message.data;
+            for (var i = 0, l = data.length; i < l; i++) {
+                console.log(data[i]);
+            }
+        },   //收到表情消息
+        onPictureMessage: function (message) {
+            //console.log('Picture');
+            var options = {url: message.url};
+            options.onFileDownloadComplete = function () {
+                // 图片下载成功
+                //console.log('Image download complete!');
+                var _domPic = '<li class="hisMsg"><a href="#" class="hisFace"><img src=""></a><div class="msnCon"><img src="'+message.url+'"></div></li>';
+                $('#msnPlace').append(_domPic);
+            };
+            options.onFileDownloadError = function () {
+                // 图片下载失败
+                //console.log('Image download failed!');
+            };
+            WebIM.utils.download.call(conn, options);       // 意义待查
+
+        }, //收到图片消息
+        onCmdMessage: function (message) {
+            console.log('CMD');
+        },     //收到命令消息
+        onAudioMessage: function (message) {
+            console.log("Audio");
+        },   //收到音频消息
+        onLocationMessage: function (message) {
+            console.log("Location");
+        },//收到位置消息
+        onFileMessage: function (message) {
+            console.log("File");
+        },    //收到文件消息
+        onVideoMessage: function (message) {
+            var node = document.getElementById('privateVideo');
+            var option = {
+                url: message.url,
+                headers: {
+                    'Accept': 'audio/mp4'
+                },
+                onFileDownloadComplete: function (response) {
+                    var objectURL = WebIM.utils.parseDownloadResponse.call(conn, response);
+                    node.src = objectURL;
+                },
+                onFileDownloadError: function () {
+                    console.log('File down load error.')
+                }
+            };
+            WebIM.utils.download.call(conn, option);
+        },   //收到视频消息
+        onRoster: function (message) {
+            console.log('Roster');
+        },         //处理好友申请
+        onInviteMessage: function (message) {
+            console.log('Invite');
+        },  //处理群组邀请
+        onOnline: function () {
+            console.log('onLine');
+        },                  //本机网络连接成功
+        onOffline: function () {
+            console.log('offline');
+        },                 //本机网络掉线
+        onError: function (message) {
+            console.log('Error');
+        },           //失败回调
+        onBlacklistUpdate: function (list) {
+            // 查询黑名单，将好友拉黑，将好友从黑名单移除都会回调这个函数，list则是黑名单现有的所有好友信息
+            console.log(list);
+        }     // 黑名单变动
+    });
+    // 初始化WebRTC Call
+    var rtcCall = new WebIM.WebRTC.Call({
+        connection: conn,
+
+        mediaStreamConstaints: {
+            audio: true,
+            video: true
+        },
+
+        listener: {
+            onAcceptCall: function (from, options) {
+                console.log('onAcceptCall::', 'from: ', from, 'options: ', options);
+            },
+            onGotRemoteStream: function (stream) {
+                console.log('onGotRemoteStream::', 'stream: ', stream);
+                var video = document.getElementById('video');
+                video.src = window.URL.createObjectURL(stream);
+            },
+            onGotLocalStream: function (stream) {
+                console.log('onGotLocalStream::', 'stream:', stream);
+                var video = document.getElementById('localVideo');
+                video.src = window.URL.createObjectURL(stream);
+            },
+            onRinging: function (caller) {
+                console.log('onRinging::', 'caller:', caller);
+            },
+            onTermCall: function (reason) {
+                console.log('onTermCall::');
+                console.log('reason:', reason);
+            },
+            onIceConnectionStateChange: function (iceState) {
+                console.log('onIceConnectionStateChange::', 'iceState:', iceState);
+            },
+            onError: function (e) {
+                console.log(e);
+            }
+        }
+    });
+      
+    </script>
+    <script type="text/javascript">
+    /**
+     * Created by clock on 16-11-30.
+     */
+// open，登录
+var fromWho = 'zhoukk',fromWhoPwd = 'lyy5176757';
+var _toWho = 'danny2';
+    var options = {
+        apiUrl: WebIM.config.apiURL,
+        user: fromWho,
+        pwd: fromWhoPwd,
+        appKey: WebIM.config.appkey
+    };
+    conn.open(options);
+    // 私聊发送文本消息，发送表情同发送文本消息，只是会在对方客户端将表情文本进行解析成图片
+    var sendPrivateText = function () {
+        var id = conn.getUniqueId();
+        var msg = new WebIM.message('txt', id);
+        var message = $('#sendMsg').val();
+        if(message == ""){
+        	 layer.open({
+                content: '发送内容不能为空',
+                time: 2
+            });
+        	return
+        }
+        msg.set({
+            msg: message,                       // 消息内容
+            to: _toWho,                          // 接收消息对象
+            roomType: false,
+            success: function (id, serverMsgId) {
+                var _dom = '<li class="myMsg"><div class="portrait_right"><img src="../../../img/toux1.png" width="100%" height="100%"></div><div class="chtext_right">'+message+'</div><div class="kong1"></div></li>';
+                $('#msnPlace').append(_dom);
+                $('#sendMsg').val('')
+            }
+        });
+        msg.body.chatType = 'singleChat';
+        conn.send(msg.body);
+    };
+
+    // 私聊发送图片消息
+    var sendPrivateImg = function () {
+        var id = conn.getUniqueId();
+        var msg = new WebIM.message('img', id);
+        var input = document.getElementById('msnPicture');           // 选择图片的input
+        var file = WebIM.utils.getFileUrl(input);                   // 将图片转化为二进制文件
+        var allowType = {
+            'jpg': true,
+            'jpeg': true,
+            'gif': true,
+            'png': true,
+            'bmp': true
+        };
+        if (file.filetype.toLowerCase() in allowType) {
+            var option = {
+                apiUrl: WebIM.config.apiURL,
+                file: file,
+                to: _toWho,
+                roomType: false,
+                chatType: 'singleChat',
+                onFileUploadError: function () {
+                    console.log('onFileUploadError');
+                },
+                onFileUploadComplete: function () {
+                    console.log('onFileUploadComplete');
+                },
+                success: function () {
+                    var _dom = '<li class="myMsg"><div class="msnCon"><img src="'+file.url+'"></div></li>';
+                    $('#msnPlace').append(_dom);
+                    $('#msnPicture').clear();
+                }
+                // flashUpload: WebIM.flashUpload               // 意义待查
+            };
+            msg.set(option);
+            conn.send(msg.body);
+        }
+    };
+    //音频
+    var sendAudioMsg = function(file, duration) {
+        debugger
+            var msg = new WebIM.message('audio', conn.getUniqueId()),
+                url,
+                me = this;
+            var input = document.getElementById('msnMicFile'),
+            file = WebIM.utils.getFileUrl(input);
+
+            msg.set({
+                apiUrl: WebIM.config.apiURL,
+                file: file,
+                to: _toWho,
+                roomType: false,
+                length: duration || 0,
+                onFileUploadError: function onFileUploadError(error) {
+                    //log(error);
+                    /*me.refs.audio.value = null;
+                    var option = {
+                        data: '发送音频失败',
+                        from: fromWho,
+                        to: _toWho
+                    };
+                    Demo.api.addToChatRecord(option, 'txt');
+                    Demo.api.appendMsg(option, 'txt');*/
+                },
+                onFileUploadComplete: function onFileUploadComplete(data) {
+                    debugger
+                    url = (location.protocol != 'https:' && WebIM.config.isHttpDNS ? conn.apiUrl + data.uri.substr(data.uri.indexOf("/", 9)) : data.uri) + '/' + data.entities[0].uuid;
+                    me.refs.audio.value = null;
+                },
+                success: function success(id, sid) {
+                    debugger
+                    /*var option = {
+                        data: url,
+                        from: fromWho,
+                        to: _toWho,
+                        id: sid,
+                        length: duration
+                    };
+                    Demo.api.addToChatRecord(option, 'aud');
+                    Demo.api.appendMsg(option, 'aud');*/
+                },
+                flashUpload: WebIM.flashUpload
+            });
+/*
+            if (Demo.selectedCate === 'groups') {
+                msg.setGroup(Demo.groupType);
+            } else if (chatroom) {
+                msg.setGroup(Demo.groupType);
+            }*/
+
+            conn.send(msg.body);
+        }
+        $.fn.audioChange = function() {
+            var input = document.getElementById('msnVideo');  
+            var me = this,
+                file = WebIM.utils.getFileUrl(input);
+
+            if (!file.filename) {
+                input.value = null;
+                return false;
+            }
+
+            /*if (!Demo.AUDIOTYPE[file.filetype.toLowerCase()]) {
+                input.value = null;
+                debugger
+                Demo.api.NotifyError(Demo.lan.invalidType + ': ' + file.filetype);
+                return;
+            }*/
+
+            if ((WebIM.utils.getIEVersion === null || WebIM.utils.getIEVersion > 9) && window.Audio) {
+                var audio = document.createElement('msnVideo2');
+                audio.oncanplay = function () {
+                    me.sendAudioMsg(file, Math.ceil(this.duration));
+                    audio = null;
+                };
+                audio.src = file.url;
+                log('audio loading...');
+            }
+        }
+    //文本
+    $('#sendMsg').unbind('keydown').bind('keydown',function(e){
+        var ev = document.all ? window.event : e; if(ev.keyCode==13) {sendPrivateText()} 
+    });
+    //图片
+    $('#msnPicture').unbind('change').bind('change',function(){
+        sendPrivateImg()
+    })
+    var recorder,
+        audio = document.querySelector('audio');
+    //语音
+    $('#msnMic').bind('click',function(e){
+        $('#msnMicFile').click();
+        debugger
+        sendAudioMsg()
+    })
+    var _chatRecord = {}
+    //聊天记录回显
+    var releaseChatRecord = function(targetId) {
+        $('#msnPlace').empty();
+        var targetId = targetId || _toWho;
+        if (targetId) {
+            if (_chatRecord[targetId] && _chatRecord[targetId].messages) {
+                
+                for (var i = 0; i < Demo.chatRecord[targetId].messages.length; i++) {
+                    Demo.api.appendMsg(Demo.chatRecord[targetId].messages[i].message, Demo.chatRecord[targetId].messages[i].type);
+                }
+            }
+        }
+    }
+// document.addEventListener("touchmove",function(e){
+//						e.preventDefault();
+//					})
+    </script>
+   
+</body>
+</html>

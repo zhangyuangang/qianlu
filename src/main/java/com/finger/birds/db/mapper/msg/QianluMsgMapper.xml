@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.finger.birds.db.dao.msg.QianluMsgDao">
+
+	<insert id="save" parameterType="com.finger.birds.model.msg.QianluMsg" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO qianlu_msg (id, userId, tuserId, createTime, updateTime) VALUES(NULL, #{userId}, ${tuserId}, now(), now());
+	</insert>
+	
+	<update id="updateById">
+		UPDATE qianlu_msg
+		SET updateTime = now()
+		<if test="qianlu.isRead != null">
+			,isRead = #{qianlu.isRead}
+		</if>
+		<if test="qianlu.lastest != null">
+			,lastest = #{qianlu.lastest}
+		</if>
+		WHERE id = #{id}
+	</update>
+	
+	<select id="getCount" resultType="int">
+		SELECT
+			COUNT(1)
+		FROM qianlu_msg
+			WHERE userId = #{userId}
+	</select>
+	
+	<select id="getList" resultType="com.finger.birds.db.po.msg.QianluMsgListPO">
+		SELECT
+			qm.*,
+			ui.nickname AS tusername,
+			ui.headImage AS theadImg
+		FROM qianlu_msg qm
+		INNER JOIN user_info ui ON qm.tuserId = ui.userId
+		WHERE qm.userId = #{userId}
+		<if test="start!=null and pageSize!=null">
+				LIMIT #{start}, #{pageSize}
+		</if>
+	</select>
+	
+	<select id="checkExsit" resultType="com.finger.birds.model.msg.QianluMsg">
+		SELECT
+		*
+		FROM qianlu_msg
+		WHERE userId = #{userId} AND tuserId = #{tuserId}
+	</select>
+	
+	<select id="getMsgList" resultType="com.finger.birds.model.msg.QianluMsgHistory">
+		SELECT * from `qianlu_msg_history`
+		WHERE msgId = #{id1} or msgId = #{id2}
+		order by createTime ASC
+	</select>
+	
+	<insert id="addHistory" parameterType="com.finger.birds.model.msg.QianluMsgHistory">
+		INSERT INTO qianlu_msg_history (`id`, `msgId`, `type`, createTime, content) VALUES (NULL, #{msgId}, #{type}, NOW(), #{content})
+	</insert>
+</mapper>

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.finger.birds.db.dao.user.UserConcernDao">
+	
+	<select id="getCareCount" parameterType="java.lang.Long" resultType="java.lang.Integer">
+		SELECT 
+			COUNT(uc.`id`)
+		FROM user_concern uc 
+			WHERE uc.`userId` = #{userId}
+	</select>
+	
+	<select id="getTCareCount" parameterType="java.lang.Long" resultType="java.lang.Integer">
+		SELECT 
+			COUNT(uc.`id`)
+		FROM user_concern uc
+			WHERE uc.`tUserId` = #{userId}
+	</select>
+	
+	<select id="checkIsConcern" parameterType="java.lang.Long" resultType="java.lang.Integer">
+		SELECT
+			COUNT(uc.`id`)
+		FROM user_concern uc
+			WHERE uc.`tUserId` = #{tUserId} AND uc.`userId` = #{userId} 
+	</select>
+	
+	<select id="getList">
+		SELECT
+			ui.`nickname`,
+			ui.`companyName`
+			FROM user_concern uc
+			<if test="bean.type == 1">
+				LEFT JOIN user_info ui ON ui.`userId` = uc.`tUserId` 
+				WHERE uc.userId = #{bean.userId}
+			</if>
+			<if test="bean.type == 2">
+				LEFT JOIN user_info ui ON ui.`tUserId` = uc.`userId` 
+				WHERE uc.tUserId = #{bean.userId}
+			</if>  
+	</select>
+	
+	<insert id="save" parameterType="java.lang.Long">
+		INSERT INTO `user_concern` 
+		(`userId`, `tUserId`, `type`, `createTime`) 
+		VALUES(#{userId}, #{tUserId},'1',now());
+	</insert>
+	
+	<update id="update" parameterType="java.lang.Long">
+		UPDATE `user_concern` set
+		createTime = now()
+		WHERE userId = #{userId} and tUserId = #{userId}
+	</update>
+	
+	<delete id="del" parameterType="java.lang.Long">
+		DELETE FROM `user_concern`
+		WHERE userId = #{userId} AND #{tUserId}
+	</delete>
+	
+	<delete id="deleteByUserId" parameterType="java.lang.Long">
+		DELETE FROM `user_concern`
+		WHERE userId = #{userId} or tUserId = #{userId}
+	</delete>
+</mapper>

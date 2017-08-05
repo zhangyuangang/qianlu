@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.finger.birds.db.dao.withdraw.WithdrawDao">
+	
+	<insert id="save" parameterType="com.finger.birds.model.withdraw.Withdraw">
+		INSERT INTO `withdraw` (id, userId, `money`, createTime, `status`, adminId, updateTime, completeTime)
+		VALUES (NULL, #{userId}, #{money}, now(), #{status}, #{adminId}, now(), #{completeTime})
+	</insert>
+	
+	<select id="check" parameterType="java.lang.Long" resultType="java.lang.Integer">
+		SELECT COUNT(1) FROM `withdraw` WHERE userId = #{userId} AND `status` &lt; 5
+	</select>
+</mapper>

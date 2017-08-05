@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.finger.birds.db.dao.user.UserIncomeDao">
+
+	<select id="getCountByUserId" parameterType="java.lang.Long" resultType="com.finger.birds.db.po.user.UserIncomeStatPO">
+		SELECT 
+			IFNULL((CASE WHEN `type` = 0
+			THEN SUM(money)
+			END),0) AS projectRef,
+			IFNULL((CASE WHEN `type` = 1
+			THEN SUM(money)
+			END),0) AS ansRef,
+			IFNULL((CASE WHEN `type` = 3
+			THEN SUM(money)
+			END),0) AS ans
+		FROM 
+			user_income_log
+		WHERE userId = #{userId} AND `type` IN (0,1,3)
+	</select>
+
+	<update id="updateByUserId">
+		UPDATE 
+		user_income 
+		SET `money` = `money` + #{money}
+		<if test="type == 1">
+			,totalMoney = totalMoney + #{money}
+		</if>
+		WHERE userId = #{userId}
+	</update>
+
+	<insert id="save" parameterType="java.lang.Long">
+		INSERT INTO user_income (userId, createTime, updateTime, `status`, `money`)
+		VALUES (#{userId}, now(), now(), 1, 0)
+	</insert>
+	
+	<insert id="addLog" parameterType="com.finger.birds.model.user.UserIncomeLog" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO `user_income_log` (id, `money`, `flow`, `type`, `payLogId`, `createTime`, userId) VALUES (NULL, #{money}, #{flow}, 0, #{payLogId}, now(), #{userId}) 
+	</insert>
+	
+	<update id="updateLogStatusByPayLogId">
+		UPDATE `user_income_log`
+		SET `status` = #{status}
+		WHERE payLogId = #{payLogId}
+	</update>
+	
+	<insert id="addPayLog" parameterType="com.finger.birds.model.user.UserPayLog" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO `user_pay_log` (id, `money`, `type`, `targetType`, targetId, userId, `code`, `thridCode`, callbackStatus, createTime, synCallbackTime, asnCallbackTime) 
+		VALUES (NULL, #{money}, 1, 1, #{targetId}, #{userId}, #{code}, #{thridCode}, #{callbackStatus}, now(), #{synCallbackTime}, #{asnCallbackTime})
+	</insert>
+	
+	<update id="updatePayLog">
+		UPDATE user_pay_log 
+		SET thridCode = #{thridCode},
+		asnCallbackTime = #{asnCallbackTime},
+		callbackStatus = 2
+		WHERE targetId = #{targetId}
+	</update>
+	
+	<select id="getPayLogByCode" resultType="com.finger.birds.model.user.UserPayLog">
+		SELECT * FROM user_pay_log WHERE targetId = #{orderId} AND targetType = 1
+	</select>
+	
+	<delete id="deleteByUserId" parameterType="java.lang.Long">
+		DELETE from `user_income` 
+		WHERE userId = #{id}
+	</delete>
+	
+</mapper>

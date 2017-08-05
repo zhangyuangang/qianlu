@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.finger.birds.db.dao.intelligent.WeightDao">
+	
+	<insert id="add" parameterType="com.finger.birds.model.intelligent.Weight">
+		INSERT INTO intelligent_weight (`toId`, `toTable`, `gw_yx`, `gw_cp`, `gw_gl`, `gw_js`, `gw_cw`, `gw_qt`, `hy_it`, `hy_jr`, `hy_ct`, `hy_qt`, `cardinality`, `liveness`, `hotness`, `createTime`, `updateTime`) 
+					VALUES (#{bean.toId}, #{bean.toTable}, #{bean.gw_yx}, #{bean.gw_cp}, #{bean.gw_gl}, #{bean.gw_js}, #{bean.gw_cw}, #{bean.gw_qt}, #{bean.hy_it}, #{bean.hy_jr}, #{bean.hy_ct}, #{bean.hy_qt}, #{bean.cardinality}, #{bean.liveness}, #{bean.hotness}, now(), now())
+	</insert>
+	
+	<delete id="deleteByIdTable">
+		delete from intelligent_weight  
+		where toId = #{toId,jdbcType=BIGINT} 
+			and toTable = #{toTable,jdbcType=VARCHAR}
+	</delete>
+	
+	<update id="editByIdTable" parameterType="com.finger.birds.model.intelligent.Weight">
+		update intelligent_weight set 
+		gw_yx = #{bean.gw_yx},
+		gw_cp = #{bean.gw_cp},
+		gw_gl = #{bean.gw_gl},
+		gw_js = #{bean.gw_js},
+		gw_cw = #{bean.gw_cw},
+		gw_qt = #{bean.gw_qt},
+		hy_it = #{bean.hy_it},
+		hy_jr = #{bean.hy_jr},
+		hy_ct = #{bean.hy_ct},
+		hy_qt = #{bean.hy_qt},
+		updateTime = now()
+		where toId = #{bean.toId,jdbcType=BIGINT} 
+			and toTable = #{bean.toTable,jdbcType=VARCHAR}
+	</update>
+	
+	<select id="getByIdTable" resultType="com.finger.birds.db.po.intelligent.WeightPO">
+		SELECT * from intelligent_weight
+		where toId = #{toId,jdbcType=BIGINT} 
+			and toTable = #{toTable,jdbcType=VARCHAR}
+	</select>
+	
+</mapper>

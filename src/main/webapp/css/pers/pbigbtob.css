@@ -1,0 +1,82 @@
+html,body{height: 100%;overflow: hidden;-webkit-tap-highlight-color:transparent;outline: none;-webkit-user-select:none;}
+body{display: -webkit-box;-webkit-box-orient: vertical;height: 100%;}
+.wrapper{-webkit-box-flex: 1;position: relative;}
+.scroll{overflow: hidden;}
+.kong{width:100%;height:1.5rem;}
+.kong1{width:100%;height:1rem;}
+header{width:100%;height: auto;overflow: hidden;}
+.modify{width: 5.5rem; height: 2rem;position: absolute;right: 5%;top: 16px;background:  #FD9A3F;border-radius: 8.4px;text-align: center;}
+.modify span{color: #fff;font-size: 1rem;line-height: 2rem;overflow: hidden;}
+.person_pic{width:5rem;height: 5rem;margin-left:1rem;position: relative;float: left;margin-top: .5rem;border-radius:100%;overflow:hidden;}
+.allst{position:absolute;width: 1.5rem;height: 1.5rem;background: url(../../img/star.png) no-repeat;background-size: 20px 20px;top:61px;left: 53px;}
+.person_text{width: 60%;height: auto;float: left;margin-left: 1rem;}
+.person_text h2{margin: 0;font-family:"Helvetica Neue" ;}
+.name{font-size: 1.3rem;color: #3A3A3A;}
+.zhiwei{font-size: 1.3rem;color: #3A3A3A;margin-left: 1rem;}
+.person_text p{font-size: .75rem;color: #7C7C7C;margin:.6rem 0 0 0;font-weight: 600;}
+.address{margin-left: 1rem;}
+.line{display: block;width:100%;height: 1px;background: #e7e7e7;}
+/**/
+.income{width: 100%;height: auto;position: relative;overflow: hidden;}
+.income span{font-size: .75rem;color: #7C7C7C;text-align: center;}
+.allin{margin-left: 6.5%;}
+.answers{margin-left: 18px;}
+.pcoffee{margin-left: 18px;}
+.pcoffee:after{content: "";position: absolute;width: 1.2rem;height: 1.2rem;background: url(../../img/yiwen.png) no-repeat;background-size:18px 18px;right: 1.1rem;top: 4px;}
+.school{width: 100%;height: 3rem;background: #f6f5f5;padding: 0 2.5%;line-height: 3rem;display:flex;}
+.school span{float:left;font-size: .75rem;color: #7C7C7C;text-indent: 8px;}
+.school_ i:nth-of-type(2){margin-left:1rem;}
+.school_education i:nth-of-type(2){margin-left:1rem;}
+.school_major i:nth-of-type(2){margin-left:1rem;}
+.sline{width:1px;height: 10.3px;display: inline-block;background: #C0C0C0;margin-top: 1.2rem;margin:0 1rem;}
+.school_{margin-left: .2rem;flex:1;}
+.school_education{flex:1;}
+.school_major{flex:1;}
+/**/
+.persosn_introduction{width: 100%;height: auto;padding: 0 5%;font-size: .75rem;color: #3a3a3a;overflow: hidden;}
+.persosn_introduction span{display:block;margin-top: 1rem;}
+.persosn_introduction p{width: 100%;line-height: 1.5rem;margin-top: .9rem;text-align:justify;}
+.visitor{width: 100%;height:1.5rem;padding: 0 5%;font-size: .75rem;color: #7C7C7C;}
+.visitor span{float: left;}
+.visitor_pic{float:left;width: 77%;height:auto;margin-left: 1rem;line-height: 1.3rem;}
+.pic_fang{width: 3rem;height: 3rem;border-radius: 100%;margin-top: -.8rem;float: left;overflow:hidden;}
+.ziliao{width: 100%;padding: 0 5%;}
+.ziliao h2{width:100%;font-size:1rem;font-weight: 600;margin:0 auto;letter-spacing: .1rem;color:#595959;overflow: hidden;line-height:1.5rem;}
+.ziliao p{width:100%;font-size:.75rem;letter-spacing: .1rem;color:#7C7C7C;}
+.title{width: 90%;height: 3rem;margin: 0 auto;font-size: 1rem;line-height: 3rem;}
+.vk{color: #c0c0c0!important;}
+.title_c:nth-of-type(2){color: #595959;font-weight: 600;margin-left: 1rem;}
+.segu{width: 100%;min-height: 10rem;}
+
+.bigmsg{width:100%;position: relative;height: auto;overflow: hidden;}
+.bigpic{width:3rem;height:3rem;;border-radius: 100%;margin-top:.8rem;float:left;position: relative;overflow: hidden;}
+.bigtxt{float:left;margin:.5rem 0 0 2rem;}
+.bigtxt p{font-size:0.88rem;color:#7c7c7c;line-height: 1.5rem;white-space:nowrap; overflow:hidden; text-overflow:ellipsis;margin-top:.2rem;}
+.bigtxt h3{font-size: 0.9125rem;color:#3a3a3a;position: relative;}
+.dian{display: inline-block;width:10px;height: 10px;position: relative;}
+.dian:after{content: "";width: 4px;height: 4px;background: #d8d8d8;position: absolute;left:3px;top:3px;border-radius: 100%;}
+.zhiwei{display: inline-block;margin-left:.3rem;font-size:.85rem;font-family: "微软雅黑";}
+.allst{position:absolute;width: 1.2rem;height: 1.2rem;background: url(../../img/star.png) no-repeat;background-size: 18px 18px;top:83px;left: 74px;}
+.segu a,.segu_ a{display: inline-block;height: 1.8625rem; width:3rem;border: 1px solid #3B3B3B;border-radius: 8px;float:right;margin-top:1.5rem;margin-right: 6%;font-size:.95rem;text-align: center;color:#3B3B3B;line-height: 1.8625rem;}
+.segu_text{color: #595959;font-size: .8rem;width: 76%;margin-left: 19%;margin-top: .6rem;line-height: 1.3rem;height: 3.8rem; overflow:hidden;}
+.segu_pic{width:100%;margin-top: .9rem;height: auto;overflow: hidden;}
+.segu_pic ul{width: 33rem;margin-left: 15%;}
+.segu_t{width: 6rem;height: 6rem;border-radius: 6px;float: left;margin-left: .7rem;}
+.segu_a{color: #3e9fe9;font-size: .8rem;margin-left: 18%;}
+.article{display:none;}
+.article_{display:none;}
+.text_one{min-height:19rem;}
+.headerpic{height:10rem;overflow:hidden;border-radius:8px;}
+@media only screen and (min-width:414px ) {
+	.school{padding: 0 5%}
+	.person_text p{font-size: .85rem;}
+	.income span{font-size: .85rem;}
+	.school span{font-size: .85rem;}
+	.persosn_introduction{font-size: .85rem;}
+	.visitor{font-size: .85rem;}
+	.sline{margin:0 1rem;}
+	.pcoffee:after{top: 1px;}
+	.ziliao p{font-size: .87rem;}
+	.tix{height: 65%;}
+	.tix_ p{margin-top: 1rem;}
+}

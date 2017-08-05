@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.finger.birds.db.dao.msg.BirdsMsgDao">
+
+	<insert id="save" parameterType="com.finger.birds.model.msg.BirdsMsg">
+		INSERT INTO birds_msg (type, userId, projectId, createTime, msg) VALUES (#{type}, #{userId}, #{projectId}, now(), #{msg})
+	</insert>
+	
+	<update id="readed" parameterType="com.finger.birds.model.msg.BirdsMsg">
+		UPDATE birds_msg SET isRead = 1 WHERE 1=1 
+		<if test="id != null">
+		AND id = #{id}
+		</if>
+		<if test="projectId != null">
+		AND projectId = #{projectId}
+		</if>
+		<if test="userId != null">
+		AND userId = #{userId}
+		</if>
+		<if test="type != null">
+		AND type = #{type}
+		</if>
+	</update>
+	
+	<select id="getCount" resultType="int">
+		SELECT
+			COUNT(1)
+		FROM birds_msg WHERE userId = #{userId} AND isRead = 0
+		<if test="type != null">
+			AND `type` = #{type}
+		</if>
+	</select>
+	
+	<select id="getMsgCount" resultType="com.finger.birds.db.po.BirdsMsgPO">
+		SELECT
+			COUNT(1) AS counts,
+			projectId,
+			userId
+		FROM birds_msg WHERE userId = #{userId} AND isRead = 0
+		<if test="type != null">
+			AND `type` = #{type}
+		</if>
+	</select>
+</mapper>

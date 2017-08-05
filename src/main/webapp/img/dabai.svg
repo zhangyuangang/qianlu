@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="86px" height="68px" viewBox="0 0 86 68" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 44.1 (41455) - http://www.bohemiancoding.com/sketch -->
+    <title>大白@1.5x</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <path d="M38,57.7875 C63.2,57.7875 76,45.3267147 76,29.2 C76,13.0732853 62.628125,0 38,0 C13.371875,0 0,13.0732853 0,29.2 C0,45.3267147 12.8,57.7875 38,57.7875 Z" id="path-1"></path>
+    </defs>
+    <g id="首页" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="大白" transform="translate(5.000000, 5.000000)">
+            <g id="Group-16">
+                <mask id="mask-2" fill="white">
+                    <use xlink:href="#path-1"></use>
+                </mask>
+                <g id="Oval-5">
+                    <use fill="#FDFAEB" fill-rule="evenodd" xlink:href="#path-1"></use>
+                    <path stroke="#3B3B3B" stroke-width="5" d="M38,60.2875 C12.8331267,60.2875 -2.5,47.8977646 -2.5,29.2 C-2.5,10.5383543 13.3446334,-2.5 38,-2.5 C62.6553666,-2.5 78.5,10.5383543 78.5,29.2 C78.5,47.8977646 63.1668733,60.2875 38,60.2875 Z"></path>
+                </g>
+                <path d="M41.2234153,-0.580169753 C56.6020759,4.14671425 66.1684896,10.2203125 69.9226563,17.640625 C75.5539063,28.7710938 73.4726563,35.715625 68.5851563,42.861977 C65.3268229,47.6262116 56.2062426,53.3096807 41.2234153,59.9123843 L64.7609597,58.4082732 C77.0552429,48.9725351 83.2216133,43.7904363 83.2600711,42.861977 C83.3177577,41.4692879 82.0542802,-7.97046903 80.4334271,-8.2816766 C79.3528584,-8.4891483 66.2828545,-5.92197936 41.2234153,-0.580169753 Z" id="Path-19" fill="#EFE2DC" mask="url(#mask-2)"></path>
+            </g>
+            <circle id="Oval-8" fill="#3B3B3B" cx="20" cy="27" r="6"></circle>
+            <circle id="Oval-8-Copy" fill="#3B3B3B" cx="56" cy="27" r="6"></circle>
+            <path d="M25.4371564,29.746875 C31.7538231,31.7973958 36.2535627,32.7257812 38.9363752,32.5320313 C42.9605939,32.2414062 50.9137189,29.7101563 52.4355939,28.8" id="Path-22" stroke="#3B3B3B" stroke-width="1.6"></path>
+        </g>
+    </g>
+</svg>

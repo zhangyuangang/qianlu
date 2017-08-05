@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.finger.birds.db.dao.chizi.ChiziDao">
+	<select id="getAll" resultType="com.finger.birds.db.po.chizi.ChiziPO">
+		SELECT * FROM chizi ORDER BY `sort`,`type`
+	</select>
+	
+	<select id="getById" resultType="com.finger.birds.db.po.chizi.ChiziPO">
+		SELECT * FROM chizi WHERE id = #{id}
+	</select>
+	
+	<select id="checkCare" resultType="int">
+		SELECT 
+			COUNT(1)
+		FROM chizi_care 
+			WHERE userId = #{userId} AND chiziId = #{chiziId}
+	</select>
+	
+	<insert id="addCare" parameterType="com.finger.birds.model.chizi.ChiziCare">
+		INSERT INTO chizi_care (userId, chiziId, createTime)
+		VALUES (#{userId}, #{chiziId}, now())
+	</insert>
+	
+	<delete id="cancelCare" parameterType="java.lang.Long">
+		DELETE FROM chizi_care WHERE userId = #{userId} AND chiziId = #{chiziId}
+	</delete>
+	
+	<update id="addNumById" >
+		UPDATE chizi 
+		SET 
+		<if test="numType == 1">
+		careNum = careNum + 1
+		</if>
+		<if test="numType == -1">
+		careNum = careNum - 1
+		</if>
+		<if test="numType == 2">
+		dabaiNum = dabaiNum + 1
+		</if>
+		<if test="numType == -2">
+		dabaiNum = dabaiNum - 1
+		</if>
+		<if test="numType == 3">
+		projectNum = projectNum + 1
+		</if>
+		<if test="numType == -3">
+		projectNum = projectNum - 1
+		</if>
+		WHERE id = #{id}
+	</update>
+	
+	<select id="getCUByUserId" resultType="com.finger.birds.model.chizi.ChiziUser">
+		SELECT
+			*
+		FROM chizi_user 
+		WHERE userId = #{userId}
+	</select>
+	
+	<select id="getCUByIdList" parameterType="java.lang.Long" resultType="java.lang.Long">
+		SELECT
+			chiziId
+		FROM chizi_user 
+		WHERE userId = #{userId} AND chiziId IN 
+		(
+		<foreach collection="list" item="item" index="index" separator="," >
+		${item}
+		</foreach>
+		)
+	</select>
+	
+	<select id="getCPByProjectId" resultType="com.finger.birds.model.chizi.ChiziProject">
+		SELECT
+			*
+		FROM chizi_project 
+		WHERE projectId = #{projectId}
+	</select>
+	
+	<select id="getCPByIdList" parameterType="java.lang.Long" resultType="java.lang.Long">
+		SELECT
+			chiziId
+		FROM chizi_project 
+		WHERE projectId = #{projectId} AND chiziId IN 
+		(
+		<foreach collection="list" item="item" index="index" separator="," >
+		${item}
+		</foreach>
+		)
+	</select>
+	
+	<insert id="addCUser" parameterType="java.lang.Long">
+		INSERT INTO chizi_user (userId, chiziId, createTime)
+		VALUES (#{userId}, #{chiziId}, now())
+	</insert>
+	<insert id="addCProject" parameterType="java.lang.Long">
+		INSERT INTO chizi_project (projectId, chiziId, createTime)
+		VALUES (#{projectId}, #{chiziId}, now())
+	</insert>
+	
+	<delete id="cancelCUser" parameterType="java.lang.Long">
+		DELETE FROM chizi_user WHERE userId = #{userId} AND chiziId = #{chiziId}
+	</delete>
+	
+	<delete id="cancelCProject" parameterType="java.lang.Long">
+		DELETE FROM chizi_project WHERE projectId = #{projectId} AND chiziId = #{chiziId}
+	</delete>
+</mapper>

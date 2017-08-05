@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.finger.birds.db.dao.banner.BannerDao">
+	
+	<insert id="add" parameterType="java.lang.String">
+		INSERT INTO banner (`id`, `title`, `cover`, `detils`, `createTime`, `updateTime`, `isDelete`) 
+					   VALUES (null, null, #{cover}, #{detils}, now(), now(), false)
+	</insert>
+	
+	<update id="deleteById" parameterType="java.lang.Long">
+		update banner
+			set isDelete = true
+			where id = #{id,jdbcType=BIGINT}
+	</update>
+	
+	<select id="findById" resultType="com.finger.birds.db.po.banner.BannerListPO">
+		SELECT id,title,cover,detils,createTime,updateTime
+			FROM banner
+			WHERE id = #{id,jdbcType=BIGINT} 
+	</select>
+	
+	<select id="findAll" resultType="com.finger.birds.db.po.banner.BannerListPO">
+		SELECT id,title,cover,detils,createTime,updateTime
+			FROM banner
+			WHERE isDelete = false
+	</select>
+
+</mapper>

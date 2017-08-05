@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.finger.birds.db.dao.dynamic.DynamicDao">
+	
+	<select id="getList" resultType="com.finger.birds.db.po.dynamic.DynamicListPO">
+		SELECT 
+			d.*,
+			ui.`headImage`,
+			ui.`companyName`,
+			ui.`majorName`,
+			ui.`schoolName`,
+			ui.`occupationName`,
+			ui.`nickname`,
+			u.code
+		FROM dynamic d
+		INNER JOIN `user_info` ui ON d.`userId` = ui.`userId`
+		INNER JOIN `user` u ON d.`userId` = u.id
+		WHERE d.isDelete=0
+			<if test="bean.userId != null">
+				AND d.userId = #{bean.userId} 
+			</if>
+			ORDER BY d.isTop DESC,d.createTime DESC
+		<if test="start!=null and pageSize!=null">
+			LIMIT #{start}, #{pageSize}
+		</if>
+	</select>
+	
+	<select id="getAdminList" resultType="com.finger.birds.db.po.dynamic.DynamicListPO">
+		SELECT 
+			d.*,
+			ui.`headImage`,
+			ui.`companyName`,
+			ui.`majorName`,
+			ui.`schoolName`,
+			ui.`occupationName`,
+			ui.`nickname`,
+			u.code,
+			iw.`id` weightId,
+			iw.gw_yx,
+			iw.gw_cp,
+			iw.gw_gl,
+			iw.gw_js,
+			iw.gw_cw,
+			iw.gw_qt,
+			iw.hy_it,
+			iw.hy_jr,
+			iw.hy_ct,
+			iw.hy_qt,
+			iw.hotness
+		FROM dynamic d
+		INNER JOIN `user_info` ui ON d.`userId` = ui.`userId`
+		INNER JOIN `user` u ON d.`userId` = u.id
+		LEFT JOIN intelligent_weight iw ON d.`id` = iw.`toId` and iw.toTable="dynamic"
+		WHERE d.isDelete=0
+			<if test="bean.userId != null">
+				AND d.userId = #{bean.userId} 
+			</if>
+			ORDER BY d.isTop DESC,d.createTime DESC
+		<if test="start!=null and pageSize!=null">
+			LIMIT #{start}, #{pageSize}
+		</if>
+	</select>
+	
+	<select id="getListCount" resultType="java.lang.Integer">
+		SELECT 
+			count(1)
+		FROM dynamic
+		WHERE isDelete=0
+		<if test="bean.userId != null">
+			AND userId = #{bean.userId} 
+		</if>
+	</select>
+	
+	<insert id="add" parameterType="com.finger.birds.db.bean.DynamicBean">
+		INSERT INTO dynamic (`userId`, `content`, `imgUrls`, `createTime`, `adminId`, `updateTime`, `viewTimes`) 
+					VALUES (#{userId}, #{content}, #{imgUrls}, now(), #{adminId}, now(), 0)
+	</insert>
+	
+	<update id="edit" parameterType="java.lang.Long">
+		update dynamic set userId = #{userId,jdbcType=BIGINT} where id = #{id,jdbcType=BIGINT}
+	</update>
+	
+	<update id="delete" parameterType="java.lang.Long">
+		update dynamic set isDelete=1
+		 where id = #{id,jdbcType=BIGINT}
+	</update>
+	
+	<select id="getById" resultType="com.finger.birds.db.po.dynamic.DynamicListPO">
+		SELECT 
+			d.*,
+			ui.`headImage`,
+			ui.`companyName`,
+			ui.`majorName`,
+			ui.`schoolName`,
+			ui.`occupationName`,
+			ui.`nickname`,
+			u.code
+		FROM dynamic d
+		INNER JOIN `user_info` ui ON d.`userId` = ui.`userId`
+		INNER JOIN `user` u ON d.`userId` = u.id
+		WHERE d.isDelete=0
+			<if test="bean.dynamicId != null">
+				AND d.id = #{bean.dynamicId} 
+			</if>
+			ORDER BY d.isTop DESC,d.createTime DESC
+	</select>
+	
+	<select id="getUserIdById" parameterType="java.lang.Long" resultType="java.lang.Long">
+		SELECT userId FROM dynamic
+		WHERE id = #{bean.dynamicId}
+	</select>
+	
+</mapper>

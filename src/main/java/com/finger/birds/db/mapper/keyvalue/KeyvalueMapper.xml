@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.finger.birds.db.dao.keyvalue.KeyvalueDao">
+	
+	<insert id="add" parameterType="java.lang.String">
+		INSERT INTO key_value (`id`, `key`, `value`, `createTime`, `updateTime`) 
+					   VALUES (null, #{key}, #{value}, now(), now())
+	</insert>
+	
+	<update id="editById" parameterType="com.finger.birds.db.bean.KeyvalueQueryBean">
+		update key_value
+		<set>
+			updateTime = now(),
+	      <if test="bean.key != null">
+	        `key` = #{bean.key},
+	      </if>
+	      <if test="bean.value != null">
+	        `value` = #{bean.value},
+	      </if>
+	    </set>
+    	WHERE id = #{bean.id}
+	</update>
+	
+	<update id="editByKey" parameterType="com.finger.birds.db.bean.KeyvalueQueryBean">
+		update key_value
+		<set>
+			updateTime = now(),
+	      <if test="bean.value != null">
+	        `value` = #{bean.value},
+	      </if>
+	    </set>
+    	WHERE `key` = #{bean.key}
+	</update>
+	
+	<delete id="deleteById" parameterType="java.lang.Long">
+		delete from key_value 
+			where id = #{id,jdbcType=BIGINT}
+	</delete>
+	
+	<delete id="deleteByKey" parameterType="java.lang.String">
+		delete from key_value 
+			where `key` = #{key,jdbcType=VARCHAR}
+	</delete>
+	
+	<select id="findById" resultType="com.finger.birds.db.po.keyvalue.KeyvalueListPO">
+		SELECT *
+			FROM key_value
+			WHERE id = #{id,jdbcType=BIGINT} 
+	</select>
+
+	<select id="findTopByKey" resultType="com.finger.birds.db.po.keyvalue.KeyvalueListPO">
+		SELECT *
+			FROM key_value
+			WHERE `key` = #{key,jdbcType=VARCHAR} 
+			order by updateTime DESC
+			limit 1
+	</select>
+	
+	<select id="findByKey" resultType="com.finger.birds.db.po.keyvalue.KeyvalueListPO">
+		SELECT *
+		FROM key_value
+		WHERE `key` = #{key,jdbcType=VARCHAR} 
+	</select>
+
+</mapper>

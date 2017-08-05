@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.finger.birds.db.dao.hotdis.HotDisDao">
+	
+	<select id="getList" resultType="com.finger.birds.db.po.hotdis.HotDisListPO">
+		SELECT 
+			* 
+		FROM 
+			hot_discuss
+		WHERE 1=1 
+		<if test="bean.month != null">
+			AND `month` = #{bean.month}
+		</if>
+		ORDER BY updateTime DESC
+		<if test="start!=null and pageSize!=null">
+			LIMIT #{start}, #{pageSize}
+		</if>
+	</select>
+	
+	<select id="getListCount" resultType="java.lang.Integer">
+		SELECT 
+			count(1)
+		FROM hot_discuss
+		WHERE 1=1 
+		<if test="bean.month != null">
+			AND `month` = #{bean.month}
+		</if>
+	</select>
+	
+	<select id="getById" resultType="com.finger.birds.db.po.hotdis.HotDisListPO">
+		SELECT 
+			* 
+		FROM 
+			hot_discuss
+		WHERE id=#{id}
+	</select>
+	
+	<select id="getMsgList" resultType="com.finger.birds.db.po.hotdis.HotDisMsgListPO">
+		SELECT
+			hdm.*,
+			ui.headImage,
+			ui.nickname
+		FROM hot_discuss_msg hdm
+		INNER JOIN user_info ui ON ui.userId = hdm.userId 
+			WHERE 1 =1 
+			<if test="bean.status != null">
+				AND hdm.`status` = #{bean.status} 
+			</if>
+			<if test="bean.hotDiscussId != null">
+				AND hdm.hotDiscussId = #{bean.hotDiscussId}
+			</if>
+			ORDER BY hdm.createTime<if test="bean.order == 0"> DESC</if>
+			<if test="start!=null and pageSize!=null">
+				LIMIT #{start}, #{pageSize}
+			</if>
+	</select>
+	
+	<select id="getMsgListCount" resultType="java.lang.Integer">
+		SELECT
+			COUNT(1)
+		FROM hot_discuss_msg
+			WHERE 1 =1 
+			<if test="bean.status != null">
+				AND `status` = #{bean.status} 
+			</if>
+			<if test="bean.hotDiscussId != null">
+				AND hotDiscussId = #{bean.hotDiscussId}
+			</if>
+	</select>
+	
+	<insert id="addMsg" parameterType="com.finger.birds.db.bean.HotDisMsgBean">
+		INSERT INTO hot_discuss_msg (`id`, `userId`, `content`, `createTime`, `updateTime`, `hotDiscussId`) VALUES (NULL, #{userId}, #{content}, now(), now(), #{hotDiscussId})
+	</insert>
+	
+	<select id="getNext" resultType="java.lang.Long">
+		SELECT
+			id
+		FROM 
+			hot_discuss
+		WHERE id &gt; #{id}
+		LIMIT 0,1
+	</select>
+	
+	<select id="getPrev" resultType="java.lang.Long">
+		SELECT
+			id
+		FROM 
+			hot_discuss
+		WHERE id &lt; #{id}
+		ORDER BY id DESC
+		LIMIT 0,1
+	</select>
+	
+	<insert id="add" parameterType="com.finger.birds.db.bean.HotDisBean">
+		INSERT INTO hot_discuss (`id`, `title`, `content`, `createTime`, `updateTime`, `month`) VALUES (NULL, #{title}, #{content}, now(), now(), MONTH(now()))
+	</insert>
+	
+	<delete id="delete" parameterType="java.lang.Long">
+		DELETE FROM hot_discuss where id = #{id,jdbcType=BIGINT}
+	</delete>
+	
+	<delete id="deleteMsgByHotdisId" parameterType="java.lang.Long">
+		DELETE FROM hot_discuss_msg where hotDiscussId = #{hotDiscussId,jdbcType=BIGINT}
+	</delete>
+	
+	<select id="findNearDate" resultType="com.finger.birds.db.po.hotdis.HotDisListPO">
+		<![CDATA[
+		SELECT * FROM hot_discuss
+		where DATE_SUB(CURDATE(), INTERVAL 10 DAY) <= date(createTime)
+		]]>
+	</select>
+
+	<delete id="deleteMsgById" parameterType="java.lang.Long">
+		DELETE FROM hot_discuss_msg where id = #{id,jdbcType=BIGINT}
+	</delete>
+	
+</mapper>

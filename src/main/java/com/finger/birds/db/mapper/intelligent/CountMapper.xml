@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.finger.birds.db.dao.intelligent.CountDao">
+	
+	<insert id="add" parameterType="com.finger.birds.model.intelligent.Count">
+		INSERT INTO intelligent_count (`userId`, `toUserId`, `toUserId2`, `toId`, `toTable`, `score`, `createTime`) 
+					VALUES (#{bean.userId}, #{bean.toUserId}, #{bean.toUserId2}, #{bean.toId}, #{bean.toTable}, #{bean.score}, now())
+	</insert>
+	
+	<select id="getList" resultType="com.finger.birds.db.po.intelligent.CountPO">
+		SELECT * 
+		from intelligent_count
+		where 1=1
+		<if test="userId != null">
+			and userId = #{userId,jdbcType=BIGINT} 
+		</if>
+		<if test="toUserId != null">
+			and toUserId = #{toUserId,jdbcType=BIGINT} 
+		</if>
+		<if test="toId != null">
+			and toId = #{toId,jdbcType=BIGINT} 
+		</if>
+		<if test="toTable != null">
+			and toTable = #{toTable,jdbcType=VARCHAR}
+		</if>
+		and TO_DAYS(createTime) = TO_DAYS(NOW())-1
+	</select>
+	
+	<select id="getListPreHourByNotToNoll" resultType="com.finger.birds.db.po.intelligent.CountPO">
+		SELECT * 
+		from intelligent_count
+		where 
+			(toUserId is not null
+			and createTime &gt; DATE_ADD(Now(),INTERVAL - 1 hour) 
+			and toTable &gt;&lt; "user" ) 
+			or toTable = "qianlu"
+	</select>
+	
+	<delete id="deleteByAll">
+		delete from intelligent_count  
+		where userId = #{userId,jdbcType=BIGINT} 
+			and toUserId = #{toUserId,jdbcType=BIGINT} 
+			and toId = #{toId,jdbcType=BIGINT} 
+			and toTable = #{toTable,jdbcType=VARCHAR}
+			and score = #{score,jdbcType=INTEGER}
+	</delete>
+	
+</mapper>

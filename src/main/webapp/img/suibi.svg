@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="78px" height="65px" viewBox="0 0 78 65" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 44.1 (41455) - http://www.bohemiancoding.com/sketch -->
+    <title>随笔@1.5x</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <rect id="path-1" x="0.894736842" y="0.95" width="66.2105263" height="53.1" rx="15.876"></rect>
+    </defs>
+    <g id="首页" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="随笔" transform="translate(5.000000, 5.000000)">
+            <g id="Group">
+                <mask id="mask-2" fill="white">
+                    <use xlink:href="#path-1"></use>
+                </mask>
+                <g id="Rectangle-17">
+                    <use fill="#FFDD92" fill-rule="evenodd" xlink:href="#path-1"></use>
+                    <rect stroke="#3B3B3B" stroke-width="5" x="-1.60526316" y="-1.55" width="71.2105263" height="58.1" rx="15.876"></rect>
+                </g>
+                <path d="M68.8115234,10.6523438 L66.9609375,13.8271484 L64.4267578,39.0253299 C63.6077474,44.0292766 60.1754557,48.1380208 54.1298828,51.3515625 C44.1285807,51.3515625 35.8313802,51.3242188 29.2382813,51.2695312 L11.4550781,53.4365234 L11.4550781,61.7236328 L68.8115234,59.8837891 L68.8115234,10.6523438 Z" id="Path-2" fill="#F2C973" mask="url(#mask-2)"></path>
+            </g>
+            <rect id="Rectangle-18" fill="#434341" x="14" y="13" width="40" height="4" rx="2"></rect>
+            <path d="M16,25 L41.4697266,25 L41.4697266,25 C42.5742961,25 43.4697266,25.8954305 43.4697266,27 L43.4697266,27 L43.4697266,27 C43.4697266,28.1045695 42.5742961,29 41.4697266,29 L16,29 L16,29 C14.8954305,29 14,28.1045695 14,27 L14,27 L14,27 C14,25.8954305 14.8954305,25 16,25 Z" id="Rectangle-18-Copy" fill="#434341"></path>
+            <path d="M48,25 L52.2929688,25 L52.2929688,25 C53.3975382,25 54.2929688,25.8954305 54.2929688,27 L54.2929688,27 L54.2929688,27 C54.2929688,28.1045695 53.3975382,29 52.2929688,29 L48,29 L48,29 C46.8954305,29 46,28.1045695 46,27 L46,27 L46,27 C46,25.8954305 46.8954305,25 48,25 Z" id="Rectangle-18-Copy-3" fill="#434341"></path>
+            <path d="M16,36 L35,36 L35,36 C36.1045695,36 37,36.8954305 37,38 L37,38 L37,38 C37,39.1045695 36.1045695,40 35,40 L16,40 L16,40 C14.8954305,40 14,39.1045695 14,38 L14,38 L14,38 C14,36.8954305 14.8954305,36 16,36 Z" id="Rectangle-18-Copy-2" fill="#434341"></path>
+        </g>
+    </g>
+</svg>

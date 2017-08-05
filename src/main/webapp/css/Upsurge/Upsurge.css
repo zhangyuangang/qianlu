@@ -1,0 +1,33 @@
+html,body{height: 100%;overflow: hidden;-webkit-tap-highlight-color:transparent;outline: none;-webkit-user-select:none;background: #F3F5F7;}
+body{display: -webkit-box;-webkit-box-orient: vertical;height: 100%;}
+.wrapper{-webkit-box-flex: 1;position: relative;}
+.kong{width: 100%;height: 1.5rem;}
+.kong1{width: 100%;height: .5rem;}
+.kong2{width: 100%;height: 1rem;}
+.header{height: auto;}
+.header h2{width:100%;font-family:"Helvetica Neue" ;font-size:.9125rem;text-align: center;}
+.header h3{width:100%;font-size:.9125rem;text-align: center;margin-top:.5rem;}
+.month{width: 100%;text-align: center;position: relative;}
+.month b{color:#7C7C7C;font-family:"Helvetica Neue" ;font-size:.9125rem;font-weight: 600;margin-right:.5rem;margin-left:1.2rem;}
+.month i{width:6.5px;height: 8.5px;border-top: 6.5px solid #7C7C7C;border-right: 5.5px solid transparent;border-left: 5.5px solid transparent;display: inline-block;}
+.month_tan{width:4.5rem;height: 0;background: #fff;position: absolute;left:44%;top:7.5rem;box-shadow: 0 0 10px lavender;overflow: hidden;}
+.month_tan ul li{text-align: center;color: #7C7C7C;font-size:.9125rem;line-height: 2rem;font-family:"Helvetica Neue" ;}
+.tap{width:100%;height: auto;background: #fff;}
+.tap_{width:90%;margin: 0 auto;display: flex;height: auto;}
+.data{flex: 1;text-align: left;}
+.data b{font-size:1.125rem;margin-top: 1rem;display: block;}
+.data i{margin-left:-1%;}
+.number{flex: 1;text-align: right;}
+.number b{font-size:1.125rem;margin-top: 1rem;display: block;}
+.text_{width:75%;}
+.text_ h3{font-size:1rem;margin-top:1rem;margin-left:5%;}
+.text_ p{font-size:.93rem;margin-left:5%;margin-top:.5rem;}
+footer .as{flex: 1;background:none;outline:none;-webkit-tap-highlight-color:rgba(0,0,0,0);}
+.as{text-align: center;}
+.as img{margin-top:.3rem;}
+.nav{font-size:.7rem;color: #7c7c7c;display: block;}
+.mn{font-weight: 600;}
+.home a > .img{display:block;width: 20px;height:20px;background: url('../../img/qianluhome.png') no-repeat;background-size:100% 100%;text-align: center;margin: .3rem auto;}
+.chat a > .img{display:block;width: 20px;height:20px;background: url('../../img/chat.png') no-repeat;background-size:100% 100%;text-align: center;margin: .3rem auto; }
+.person a > .img{display:block;width: 20px;height:20px;background: url('../../img/my.png') no-repeat;background-size:100% 100%;text-align: center;margin: .3rem auto;}
+footer{height: 3.2rem;position: relative;display: flex;background: #fff;border-top:1px solid #E5E5E5;}

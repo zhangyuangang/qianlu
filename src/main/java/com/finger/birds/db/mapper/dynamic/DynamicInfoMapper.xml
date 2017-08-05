@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.finger.birds.db.dao.dynamic.DynamicInfoDao">
+	
+	<select id="setUTF8mb4">
+		SET NAMES utf8mb4
+	</select>
+	
+	<select id="setUTF8">
+		SET NAMES utf8
+	</select>
+
+	<insert id="addComment" parameterType="com.finger.birds.model.dynamic.DynamicComment" useGeneratedKeys="true" keyProperty="id">
+		<selectKey resultType="long" keyProperty="id" order="AFTER" >
+	        SELECT LAST_INSERT_ID() AS id
+	    </selectKey>
+		INSERT INTO dynamic_comment (`userId`, `tuserId`, `dynamicId`, `content`, `starTimes`, `createTime`, `updateTime`, `isTop`, `isDelete`) 
+					VALUES (#{userId}, #{tuserId}, #{dynamicId}, #{content}, 0, now(), now(), 0, 0)
+	</insert>
+
+	<select id="getIdByBean" resultType="java.lang.Long">
+		SELECT MAX(id) from dynamic_comment
+		where userId = #{userId} and dynamicId = #{dynamicId}
+	</select>
+	
+	<insert id="addStar">
+		INSERT INTO dynamic_star (`userId`, `dynamicId`, `createTime`, `updateTime`) 
+					VALUES (#{userId}, #{dynamicId}, now(), now())
+	</insert>
+	
+	<insert id="addView">
+		INSERT INTO dynamic_view (`userId`, `dynamicId`, `createTime`, `updateTime`) 
+					VALUES (#{userId}, #{dynamicId}, now(), now())
+	</insert>
+	
+	<insert id="addCommentStar">
+		INSERT INTO dynamic_comment_star (`userId`, `commentId`, `createTime`, `updateTime`) 
+					VALUES (#{userId}, #{commentId}, now(), now())
+	</insert>
+	
+	<update id="deleteComment" parameterType="java.lang.Long">
+		update dynamic_comment set isDelete=1
+		 where id = #{id,jdbcType=BIGINT}
+	</update>
+	
+	<delete id="deleteStar" parameterType="java.lang.Long">
+		delete from dynamic_star 
+		where userId = #{userId,jdbcType=BIGINT} 
+			and dynamicId = #{dynamicId,jdbcType=BIGINT}
+	</delete>
+	
+	<delete id="deleteCommentStar" parameterType="java.lang.Long">
+		delete from dynamic_comment_star 
+		where userId = #{userId,jdbcType=BIGINT} 
+			and commentId = #{commentId,jdbcType=BIGINT}
+	</delete>
+ 
+ 	
+	<update id="upView" parameterType="java.lang.Long">
+		update dynamic set viewTimes = viewTimes + 1
+		where id = #{id,jdbcType=BIGINT} 
+	</update>
+	
+	 <update id="upStar" parameterType="java.lang.Long">
+		update dynamic set starTimes = starTimes + 1
+		where id = #{id,jdbcType=BIGINT} 
+	</update>
+	
+	 <update id="downStar" parameterType="java.lang.Long">
+		update dynamic set starTimes = starTimes - 1
+		where id = #{id,jdbcType=BIGINT} 
+	</update>
+	
+ 	<update id="upCommentStar" parameterType="java.lang.Long">
+		update dynamic_comment set starTimes = starTimes + 1
+		where id = #{commentId,jdbcType=BIGINT} 
+	</update>
+	
+	<update id="downCommentStar" parameterType="java.lang.Long">
+		update dynamic_comment set starTimes = starTimes - 1
+		where id = #{commentId,jdbcType=BIGINT} 
+	</update>
+	
+	<update id="upCommentTimes" parameterType="java.lang.Long">
+		update dynamic set commentTimes = commentTimes + 1
+		where id = #{id,jdbcType=BIGINT} 
+	</update>
+	
+	<update id="downCommentTimes" parameterType="java.lang.Long">
+		update dynamic set commentTimes = commentTimes - 1
+		where id = #{id,jdbcType=BIGINT} 
+	</update>
+	
+	<select id="getDynamicStar" resultType="com.finger.birds.model.dynamic.DynamicStar">
+		SELECT * from dynamic_star
+		where userId = #{userId} and dynamicId = #{dynamicId}
+		limit 0,1
+	</select>
+	
+	<select id="getDynamicCommentStar" resultType="com.finger.birds.model.dynamic.DynamicCommentStar">
+		SELECT * from dynamic_comment_star
+		where userId = #{userId} and commentId = #{commentId}
+		limit 0,1
+	</select>
+	
+	<select id="getDynamicCommentList" resultType="com.finger.birds.db.po.dynamic.DynamicCommentPO">
+		SELECT 
+			dc.*,
+			ui1.nickname nickname,
+			ui1.headImage headImage,
+			ui2.nickname tnickname,
+			ui2.headImage theadImage
+		FROM dynamic_comment dc
+		LEFT JOIN `user_info` ui1 ON dc.userId = ui1.userId
+		LEFT JOIN `user_info` ui2 ON dc.tuserId = ui2.userId
+		WHERE dc.isDelete=0
+			<if test="bean.dynamicId != null">
+				AND dc.dynamicId = #{bean.dynamicId} 
+			</if>
+			ORDER BY dc.isTop DESC,dc.createTime ASC
+		<if test="start!=null and pageSize!=null">
+			LIMIT #{start}, #{pageSize}
+		</if>
+	</select>
+	
+	<select id="getDynamicCommentListCount" resultType="java.lang.Integer">
+		SELECT 
+			count(1)
+		FROM dynamic_comment
+		WHERE isDelete=0
+			<if test="bean.dynamicId != null">
+				AND id = #{bean.dynamicId} 
+			</if>
+	</select>
+			
+	<select id="getInfoByCommentId" resultType="com.finger.birds.db.po.dynamic.DynamicIdInfoPO">
+		select 
+			d.userId dynamicUserId, 
+			d.id dynamicId,
+			dc.userId commentUserId,
+			dc.tuserId toUserId 
+		from dynamic_comment dc
+			left join `dynamic` d
+			on d.id = dc.dynamicId 
+		where dc.id = #{dynamicId}
+	</select>
+</mapper>

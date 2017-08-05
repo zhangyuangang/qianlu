@@ -1,0 +1,38 @@
+html,body{height: 100%;overflow: hidden;-webkit-tap-highlight-color:transparent;outline: none;-webkit-user-select:none;background: #f3f5f7;}
+body{display: -webkit-box;-webkit-box-orient: vertical;height: 100%;}
+.wrapper{-webkit-box-flex: 1;position: relative;}
+.scroll{overflow: hidden;}
+.kong{width:100%;height:1.5rem;}
+.kong1{width:100%;height:1rem;}
+.kong2{width:100%;height:3rem;}
+.header{width:100%;height: auto;overflow: hidden;text-align: center;}
+.container{width: 100%;height: auto;}
+.container ul li{width: 100%;height: 4rem;background: #fff;margin-bottom: 1px;}
+.bj_left{float: left;position: relative;}
+.bj_right{float: right;}
+.bj_left span{color: #7C7C7C;line-height: 4rem;margin:0 1rem;font-family:"Helvetica Neue" ;}
+.bj_right input{width: 200px;color: #595959;line-height: 4rem;font-family:"Helvetica Neue" ;text-align: right;font-size: 1.2rem;color: #7C7C7C;margin: 0 .5rem;}
+#img:after{content: "*";width: 1rem;height: 1rem;color: #C0C0C0;position: absolute;top: 19px;left: .4rem;}
+#img_ span{display: block;width: 3rem;height: 3rem;background: #D8D8D8;margin-top:.5rem;border-radius: 100%;margin-right:.5rem;border-radius:100%;overflow:hidden;}
+.schoolm{width:100%;height: auto;overflow: hidden;text-align: center;}
+.schoolm h3{color: #595959;font-size: 1.2rem;}
+.personm,.personz{width:100%;height: auto;overflow: hidden;text-align: center;}
+.personm h3,.personz h3{color: #595959;font-size: 1.2rem;}
+.personm_,.personz_{width: 100%;height: 8rem;background: #fff;position: relative;}
+.personm_ textarea,.personz_ textarea{background: #fff;height:8rem;width: 100%;padding: 10px;line-height: 20px;font-size:.9rem;}
+.personm_ p,.personz_ p{width: 100%;height: auto;position: absolute;text-align: center;top:3.5rem;color: #C0C0C0;}
+/**/
+.button{width: 6rem;height: 3rem;border: 2px solid #FC8F2A;border-radius: 32px;text-align: center;line-height: 2.8rem;color: #FC8F2A;margin: 0 auto;}
+/**/
+.footer{width: 100%;height: auto;}
+.footer p{color: #c0c0c0;font-size: .8rem;text-align: center;line-height: 1.4rem;}
+@media only screen and (min-width:414px ) {
+	.school{padding: 0 1.5%}
+	.person_text p{font-size: .85rem;}
+	.income span{font-size: .85rem;}
+	.school span{font-size: .85rem;}
+	.persosn_introduction{font-size: .85rem;}
+	.visitor{font-size: .85rem;}
+	.sline{margin-left: 1rem;}
+	.pcoffee:after{top: 1px;}
+}

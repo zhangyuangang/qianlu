@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.finger.birds.db.dao.project.ProjectDao">
+    
+    <insert id="save" parameterType="com.finger.birds.db.bean.ProjectBean" useGeneratedKeys="true" keyProperty="id">
+    	INSERT INTO `project` 
+    	(`name`, `desc`, `imgUrl`, `timeType`, `startPrice`, `endPrice`, `industryName`, `companyName`, `professionName`, `workType`, `startTime`, `endTime`, `isPublic`, `createTime`, `userId`, `updateTime`, `times`, `timeLine`, `tUserId`) 
+    		VALUES
+    	(#{name}, #{desc}, #{imgUrl}, #{timeType}, #{startPrice}, #{endPrice}, #{industryName}, #{companyName}, #{professionName}, #{workType}, now(), #{endTime}, #{isPublic}, now(), #{userId}, now(), #{times}, #{timeLine}, #{tUserId});
+    </insert>
+    
+    <select id="getListForPage" resultType="com.finger.birds.db.po.project.ProjectListPO">
+    	SELECT
+			p.`name`,
+			p.`desc`,
+			p.`status`,
+			p.`startPrice`,
+			p.`endPrice`,
+			p.`applyTimes`,
+			p.`times`,
+			ps.`joins`,
+			ps.`exacts`,
+			pra.`commentScore`,
+			ps.`price`,
+			p.id,
+			ps.id AS sumupId
+		FROM
+			project p 
+		LEFT JOIN project_apply pa ON p.`id` = pa.`projectId`
+		LEFT JOIN project_ref_apply pra ON pra.`projectId` = p.`id` AND pra.`applyId` = pa.`id` AND pra.`status` > 0
+		LEFT JOIN project_sumup ps ON ps.`projectId` = p.`id` AND ps.type = 1
+		<if test="bean.type == 2">
+		LEFT JOIN project_sumup_user psu ON psu.`sumupId` = ps.`id`
+		</if>
+		WHERE 1=1
+		<if test="bean.type == 0">
+			 AND pa.`userId` = #{bean.userId}
+		</if>
+		<if test="bean.type == 1">
+			 AND p.`userId` = #{bean.userId}
+		</if>
+		<if test="bean.type == 2">
+			AND psu.`userId` = #{bean.userId}
+		</if>
+		<if test="bean.searchType != -1">
+			AND p.`status` = 1
+		</if>
+		<if test="bean.searchType == 0">
+			AND (p.companyName LIKE CONCAT('%', #{bean.keyWords},'%') OR p.professionName LIKE CONCAT('%', #{bean.keyWords},'%') OR p.industryName LIKE CONCAT('%', #{bean.keyWords},'%') OR (p.name LIKE CONCAT('%', #{bean.keyWords},'%')))
+		</if>
+		<if test="bean.searchType == 1">
+			AND (p.companyName LIKE CONCAT('%', #{bean.keyWords},'%'))
+		</if>
+		<if test="bean.searchType == 2">
+			AND p.professionName LIKE CONCAT('%', #{bean.keyWords},'%')
+		</if>
+		<if test="bean.searchType == 3">
+			AND p.industryName LIKE CONCAT('%', #{bean.keyWords},'%')
+		</if>
+		<if test="bean.tuserId != null">
+			AND p.tUserId = #{bean.tuserId}
+		</if>
+		ORDER BY p.id DESC
+		<if test="start!=null and pageSize!=null">
+			LIMIT #{start}, #{pageSize}
+		</if>
+    </select>
+    
+    <select id="getListForPageCount" parameterType="com.finger.birds.db.bean.ProjectQueryBean" resultType="java.lang.Integer">
+    	SELECT
+			COUNT(1)
+		FROM
+			project p 
+		LEFT JOIN project_apply pa ON p.`id` = pa.`projectId`
+		LEFT JOIN project_ref_apply pra ON pra.`projectId` = p.`id` AND pra.`applyId` = pa.`id` AND pra.`status` > 0
+		LEFT JOIN project_sumup ps ON ps.`projectId` = p.`id` AND ps.type = 1
+		<if test="type == 2">
+		LEFT JOIN project_sumup_user psu ON psu.`sumupId` = ps.`id`
+		</if>
+		WHERE 1=1
+		<if test="type == 0">
+			 AND pa.`userId` = #{userId}
+		</if>
+		<if test="type == 1">
+			 AND p.`userId` = #{userId}
+		</if>
+		<if test="type == 2">
+			AND psu.`userId` = #{userId}
+		</if>
+		<if test="searchType == 0">
+			AND (p.companyName LIKE CONCAT('%', #{keyWords},'%') OR p.professionName LIKE CONCAT('%', #{keyWords},'%') OR p.industryName LIKE CONCAT('%', #{keyWords},'%') OR (p.name LIKE CONCAT('%', #{keyWords},'%')))
+		</if>
+		<if test="searchType == 1">
+			AND (p.companyName LIKE CONCAT('%', #{keyWords},'%'))
+		</if>
+		<if test="searchType == 2">
+			AND p.professionName LIKE CONCAT('%', #{keyWords},'%')
+		</if>
+		<if test="searchType == 3">
+			AND p.industryName LIKE CONCAT('%', #{keyWords},'%')
+		</if>
+		<if test="tuserId != null">
+			AND p.tUserId = #{tuserId}
+		</if>
+    </select>
+    
+    <select id="getById" parameterType="java.lang.Long" resultType="com.finger.birds.db.po.project.ProjectPO">
+    	SELECT
+    		p.*,
+    		(CASE 
+			WHEN p.`userId` = #{userId}
+			THEN 1
+			WHEN pa.`userId` = #{userId} AND pra.`id` IS NULL
+			THEN 2
+			WHEN pa.`userId` = #{userId} AND pra.`id` IS NOT NULL
+			THEN 3
+			ELSE 0
+			END) AS isSelf,
+			pra.applyId
+    	FROM `project` p
+    	LEFT JOIN project_apply pa ON p.id = pa.projectId
+    	LEFT JOIN project_ref_apply pra ON pra.projectId = p.id AND pra.`status` > 0
+    	WHERE p.id = #{id}
+    </select>
+
+	<select id="get" parameterType="java.lang.Long" resultType="com.finger.birds.model.project.Project">
+		SELECT 
+		* 
+		FROM
+		project
+		WHERE id = #{id}
+		<if test="isLock == 1">
+			FOR UPDATE
+		</if>
+	</select>
+    
+    <update id="updateViewTimes" parameterType="java.lang.Long">
+    	UPDATE `project` SET 
+    		viewTimes = viewTimes + 1
+    	WHERE id = #{id} 
+    </update>
+    
+    <update id="updateApplyTimes" parameterType="java.lang.Long">
+    	UPDATE `project` SET 
+    		applyTimes = applyTimes + 1
+    	WHERE id = #{id} 
+    </update>
+    
+    <update id="updateStatus">
+    	UPDATE `project` SET 
+    		`status` = #{status}
+    	WHERE id = #{id} 
+    </update>
+    
+    <select id="checkComment" parameterType="java.lang.Long" resultType="com.finger.birds.db.po.project.ProjectCommentCheckPO">
+    	SELECT
+    		p.userId AS puserId,
+    		pa.userId AS auserId,
+    		pra.commentStatus,
+    		pra.`status` AS refStatus,
+    		pra.id AS refId,
+    		p.id AS projectId,
+    		pa.id AS applyId 
+    	FROM project p
+    		INNER JOIN project_apply pa ON p.id = pa.projectId
+    		INNER JOIN project_ref_apply pra ON pa.id = pra.applyId
+    	WHERE p.id = #{projectId}
+    </select>
+    
+    <update id="commentRef" parameterType="com.finger.birds.model.project.ProjectRefApply">
+    	UPDATE project_ref_apply SET 
+    	<if test="commentText != null">
+    	commentText = #{commentText}, 
+    	</if>
+    	<if test="commentScore != null">
+    	commentScore = #{commentScore}, 
+    	</if>
+    	commentStatus = commentStatus + #{commentStatus} WHERE id = #{id}
+    </update>
+    
+    <insert id="addComment" parameterType="com.finger.birds.model.user.UserComment">
+    	INSERT INTO user_comment (userId, projectId, applyId, tUserId, commentScore, commentText, createTime) 
+    	VALUES (#{userId}, #{projectId}, #{applyId}, #{tUserId}, #{commentScore}, #{commentText}, now())
+    </insert>
+    
+    <select id="getCPOById" parameterType="java.lang.Long" resultType="com.finger.birds.db.po.project.ProjectComPO">
+    	SELECT 
+			p.*,
+			ui.nickname,
+			pa.userId AS auserId,
+			ui2.nickname AS anickname
+ 		FROM 
+			project p 
+		INNER JOIN project_apply pa ON pa.projectId = p.id
+		INNER JOIN project_ref_apply pra ON pra.projectId = p.id
+		INNER JOIN user_info ui ON ui.userId = p.userId
+		INNER JOIN user_info ui2 ON ui2.userId = pa.userId
+		WHERE p.id = #{projectId}
+    </select>
+    
+</mapper>

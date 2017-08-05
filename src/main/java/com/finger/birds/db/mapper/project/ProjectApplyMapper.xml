@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.finger.birds.db.dao.project.ProjectApplyDao">
+    
+	<insert id="save" parameterType="com.finger.birds.model.project.ProjectApply" keyProperty="id" useGeneratedKeys="true">
+		INSERT INTO `project_apply` (`id`,`projectId`, `intro`, `price`, `planTime`, `userId`, `createTime`, `updateTime`) VALUES
+		(null,#{projectId},#{intro},#{price},#{planTime},#{userId},now(),now());
+	</insert>
+	
+	<insert id="detailBatchSave" parameterType="java.util.List">
+		INSERT INTO project_apply_detail (`applyId`, `content`, `payPer`, `price`, `sort`) VALUES
+		<foreach collection="list" item="item" index="index" separator="," >
+		(#{item.applyId}, #{item.content}, #{item.payPer}, #{item.price}, #{item.sort})
+		</foreach>
+	</insert>
+	
+	<select id="checkIsApply" parameterType="java.lang.Long" resultType="java.lang.Integer">
+		SELECT
+			COUNT(1)
+		FROM `project_apply`
+			WHERE projectId = #{projectId} AND userId = #{userId}
+	</select>
+	
+	<select id="getListForPage" parameterType="com.finger.birds.db.bean.ProjectApplyQueryBean" resultType="com.finger.birds.db.po.project.ProjectApplyListPO">
+		SELECT 
+			ui.`nickname`,
+			pa.`intro`,
+			pa.`price`,
+			pa.`createTime`,
+			pa.`planTime`,
+			pa.id
+		FROM project_apply pa 
+			INNER JOIN `user` u ON u.`id` = pa.`userId`
+			INNER JOIN user_info ui ON ui.`userId` = u.`id`
+		WHERE pa.`projectId` = #{bean.projectId}
+		<if test="start!=null and pageSize!=null">
+			LIMIT #{start}, #{pageSize}
+		</if>
+	</select>
+	
+	<select id="getListForPageCount" parameterType="com.finger.birds.db.bean.ProjectApplyQueryBean" resultType="java.lang.Integer">
+		SELECT 
+			COUNT(1)
+		FROM project_apply pa 
+			INNER JOIN `user` u ON u.`id` = pa.`userId`
+			INNER JOIN user_info ui ON ui.`userId` = u.`id`
+		WHERE pa.`projectId` = #{projectId}
+	</select>
+	
+	<select id="getById" parameterType="java.lang.Long" resultType="com.finger.birds.db.po.project.ProjectApplyPO">
+		SELECT 
+			ui.`nickname`,
+			ui.headImage,
+			pa.`intro`,
+			pa.`price`,
+			pa.`createTime`,
+			pa.`planTime`,
+			pa.`projectId`,
+			pa.id,
+			pa.userId
+		FROM project_apply pa 
+			INNER JOIN `user` u ON u.`id` = pa.`userId`
+			INNER JOIN user_info ui ON ui.`userId` = u.`id`
+		WHERE pa.`id` = #{id}
+	</select>
+	
+	<select id="getChoosedByProjectId" parameterType="java.lang.Long" resultType="com.finger.birds.db.po.project.ProjectApplyPO">
+		SELECT 
+			ui.`nickname`,
+			ui.headImage,
+			pa.`intro`,
+			pa.`price`,
+			pa.`createTime`,
+			pa.`planTime`,
+			pa.`projectId`,
+			pa.userId,
+			pa.id,
+			u2.`id` AS tuserId,
+			ui2.`nickname` AS tnickname,
+			ui2.headImage AS theadImage
+		FROM project_apply pa 
+			INNER JOIN project_ref_apply pra ON pra.applyId = pa.id AND pra.status > 0
+			INNER JOIN `user` u ON u.`id` = pa.`userId`
+			INNER JOIN user_info ui ON ui.`userId` = u.`id`
+			INNER JOIN project p ON pra.projectId = p.id
+			INNER JOIN `user` u2 ON u2.id = p.userId
+			INNER JOIN user_info ui2 ON ui2.userId = u2.id
+		WHERE pra.projectId = #{projectId}
+	</select>
+	
+	<select id="getDetailByPAId" parameterType="java.lang.Long" resultType="com.finger.birds.model.project.ProjectApplyDetail">
+		SELECT
+			pad.*
+		FROM 
+			project_apply_detail pad
+		WHERE pad.applyId = #{applyId}
+		ORDER BY pad.sort ASC
+	</select>
+	
+	<insert id="saveRef" parameterType="com.finger.birds.model.project.ProjectRefApply">
+		INSERT INTO `project_ref_apply` (projectId, applyId, createTime, `status`)
+		VALUES (#{projectId}, #{applyId}, now(), 1)
+	</insert>
+	
+	<select id="getByPAByDetailId" parameterType="java.lang.Long" resultType="com.finger.birds.db.po.project.ProjectApplyCheckPO">
+		SELECT 
+			pa.*,pa.`userId` AS auserId,
+			p.`userId` AS puserId,
+			pra.`status` AS `status`
+		FROM 
+		project_apply pa 
+		INNER JOIN project_ref_apply pra ON pra.applyId = pa.id
+		INNER JOIN project_apply_detail pad ON pa.id = pad.applyId
+		INNER JOIN project p ON pa.`projectId` = p.`id`
+		WHERE pad.id = #{detailId}		
+	</select>
+	
+	<update id="updateDetailStatus">
+		UPDATE project_apply_detail SET 
+		<if test="type == 1">
+			obStatus = #{status}
+		</if>
+		<if test="type == 2">
+			nbStatus = #{status}			
+		</if>
+		WHERE id = #{id}		
+	</update>
+	
+	<update id="updateRefStatus">
+		UPDATE project_ref_apply SET `status` = #{status} 
+		<if test="status == 3">,endTime = now()</if>
+		 WHERE projectId = #{projectId}
+	</update>
+	
+	<select id="checkSumup" resultType="java.lang.Integer" parameterType="java.lang.Long">
+		SELECT 
+			COUNT(1)
+		FROM project_apply pa
+			INNER JOIN project p ON pa.`projectId` = p.`id`
+			INNER JOIN project_ref_apply pra ON pra.`applyId` = pa.`id`
+		WHERE p.`status` = 3 AND p.`isPublic` = 1 AND p.`userId` = #{userId} and pa.`id` = #{applyId} AND pra.`status` = 3
+	</select>
+</mapper>

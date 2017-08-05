@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.finger.birds.db.dao.order.OrderDao">
+	
+	<select id="getById" parameterType="java.lang.Long" resultType="com.finger.birds.model.order.Order">
+		SELECT * FROM `order` WHERE id = #{id}
+	</select>
+	
+	<select id="getByCode" parameterType="java.lang.String" resultType="com.finger.birds.model.order.Order">
+		SELECT * FROM `order` WHERE `orderCode` = #{code}
+	</select>
+	
+	<update id="updateById">
+		UPDATE `order` 
+		SET 
+		<if test="order.payTime != null">
+		payTime = #{order.payTime},
+		</if>
+		<if test="order.status != null">
+		`status` = #{order.status},
+		</if>
+		<if test="order.timeType != null">
+		timeType = #{order.timeType},
+		</if>
+		<if test="order.orderCode != null">
+		orderCode = #{order.orderCode},
+		</if>
+		<if test="order.startDate != null">
+		startDate = #{order.startDate},
+		</if>
+		<if test="order.isSend != null">
+		isSend = #{order.isSend},
+		</if>
+		updateTime = now()	
+		WHERE id = #{id}
+	</update>
+	
+	<insert id="save" parameterType="com.finger.birds.model.order.Order" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO `order` (id, orderCode, userId, tuserId, createTime, updateTime, payTime, `status`, timeType, intro, price, startDate, xudan) 
+		VALUES (NULL, #{orderCode}, #{userId}, #{tuserId}, NOW(), NOW(), NULL, #{status}, #{timeType}, #{intro}, #{price}, #{startDate}, #{xudan})
+	</insert>
+	
+	<select id="getListN" parameterType="com.finger.birds.db.bean.OrderQueryBean" resultType="com.finger.birds.model.order.Order">
+	SELECT 
+		* 
+	FROM `order`
+		WHERE 1=1
+		<if test="userId != null">
+			AND userId = #{userId}
+		</if>
+		<if test="tuserId != null">
+			AND tuserId = #{tuserId}
+		</if>
+		<if test="checkDate != null">
+			AND TO_DAYS(payTime) = TO_DAYS(NOW())
+		</if>
+		<if test="status != null">
+			AND `status` = #{status}
+		</if>
+		order by payTime DESC
+	</select>
+	
+	<select id="getList" resultType="com.finger.birds.db.po.order.OrderListPO">
+		SELECT 
+			o.*, 
+			u.nickname nickname, 
+			tu.nickname tnickname
+		FROM (`order` o
+           LEFT JOIN user_info u ON o.userId = u.userId)
+           LEFT JOIN user_info tu ON o.tuserId = tu.userId
+		WHERE 1=1
+			<if test="bean.orderCode != null">
+				AND o.orderCode like #{bean.orderCode}
+			</if>
+			ORDER BY o.createTime DESC
+		<if test="start!=null and pageSize!=null">
+			LIMIT #{start}, #{pageSize}
+		</if>
+	</select>
+	
+	<select id="getListCount" resultType="java.lang.Integer">
+		SELECT 
+			count(1)
+		FROM `order`
+		WHERE 1=1
+			<if test="bean.orderCode != null">
+				AND orderCode like #{bean.orderCode}
+			</if>
+	</select>
+	
+	<select id="getTotalPayPerson" resultType="java.util.Map">
+		SELECT 
+			count(distinct userId) totalPayPerson
+		FROM `order`
+	</select>
+	
+	<select id="getTotalProfitPerson" resultType="java.util.Map">
+		SELECT 
+			count(distinct tuserId) totalProfitPerson
+		FROM `order`
+	</select>
+	
+	<select id="getTotalAmount" resultType="java.util.Map">
+		SELECT 
+			sum(price) totalAmount
+		FROM `order`
+	</select>
+	
+	<select id="searchByStart" resultType="com.finger.birds.db.po.order.OrderListPO">
+		SELECT *
+		FROM `order`
+			 WHERE orderCode like #{bean.orderCode}
+			 order by updateTime DESC
+			 Limit 0,5
+	</select>
+	
+	<select id="getPayAmountList" resultType="com.finger.birds.db.po.order.OrderAmountPO">
+		select p.userId, ui.nickname, u.userType, u.code, sum(p.money) as payAmount 
+			from user_pay_log p
+			left join `user` u on p.userId=u.id
+			left join user_info ui on p.userId=ui.userId
+			group by userId 
+			order by payAmount DESC
+			<if test="start!=null and pageSize!=null">
+				LIMIT #{start}, #{pageSize}
+			</if>
+	</select>
+	
+	<select id="getPayListCount" resultType="java.lang.Integer">
+		SELECT 
+			count(distinct userId)
+		FROM `user_pay_log`
+	</select>
+
+	<select id="getProfitAmountList" resultType="com.finger.birds.db.po.order.OrderAmountPO">
+		select i.userId, ui.nickname, u.userType, u.code, sum(i.money) as payAmount 
+			from user_income i
+			left join `user` u on i.userId=u.id
+			left join user_info ui on i.userId=ui.userId
+			group by userId 
+			order by payAmount DESC
+			<if test="start!=null and pageSize!=null">
+				LIMIT #{start}, #{pageSize}
+			</if>
+	</select>
+
+	<select id="getProfitListCount" resultType="java.lang.Integer">
+		SELECT 
+			count(distinct userId)
+		FROM `user_income`
+	</select>
+	
+	<select id="getOrderCodeByUserId" resultType="java.util.Map">
+		select orderCode
+			from `order`
+			where userId = #{userId} or tuserId = #{userId}
+			limit 0,5
+	</select>
+	
+	<select id="getJobInfoByTimeTypeToday" resultType="com.finger.birds.db.po.order.OrderListPO" parameterType="java.lang.Short">
+		SELECT 
+			o.id,
+			o.orderCode,
+			o.userId,
+			o.tuserId,
+			ui.nickname nickname, 
+			tui.nickname tnickname,
+			u.thirdKey openId,
+			tu.thirdKey topenId
+		FROM (`order` o
+           LEFT JOIN user_info ui ON o.userId = ui.userId)
+           LEFT JOIN user_info tui ON o.tuserId = tui.userId
+					 LEFT JOIN `user` u ON o.userId = u.id
+					 LEFT JOIN `user` tu ON o.tuserId = tu.id
+		WHERE 1=1 
+			and to_days(o.createTime)=to_days(now())
+		<if test="timeType!=null">
+			and o.timeType = #{timeType}
+		</if>
+	</select>
+	
+	<select id="getJobInfoByStatusToday" resultType="java.util.Map">
+		SELECT 
+			id,
+			orderCode,
+			userId,
+			tuserId
+			from `order`
+		WHERE 1=1 
+			and to_days(createTime) = to_days(now())-1
+			and status = 1
+	</select>
+	
+	<select id="checkXuDan" resultType="java.lang.Integer">
+		SELECT count(1)
+		FROM `order`
+		WHERE userId = #{userId} AND tuserId = #{tuserId} AND timeType = #{timeType} AND xudan = #{xudan} AND `status` &gt; 0  
+	</select>
+</mapper>

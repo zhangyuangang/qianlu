@@ -1,0 +1,408 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.finger.birds.db.dao.user.UserDao">
+	
+	<insert id="save" parameterType="com.finger.birds.model.user.User" keyProperty="id" useGeneratedKeys="true">
+		<selectKey resultType="long" keyProperty="id" order="AFTER" >
+	        SELECT LAST_INSERT_ID() AS id
+	    </selectKey>
+		INSERT INTO `user` (`account`, `password`, `userType`, `phone`, `source`, `status`, `createTime`, `updateTime`, `thirdKey`, `code`, `occType`, `isHot`) VALUES
+		(#{account}, #{password},#{userType},#{phone},#{source}, #{status}, now(), now(),#{thirdKey}, #{code}, #{occType}, #{isHot});
+	</insert>
+
+	<select id="getByThirdKey" resultType="com.finger.birds.model.user.User" parameterType="java.lang.String">
+		SELECT
+			id, account, userType, phone, source, status, createTime, updateTime, thirdKey, code, occType, isHot
+		FROM `user`
+			 WHERE thirdKey = #{thirdKey}
+	</select>
+	
+	<select id="getById" resultType="com.finger.birds.model.user.User" parameterType="java.lang.Long">
+		SELECT
+			id, account, userType, phone, source, status, createTime, updateTime, thirdKey, code, occType, isHot
+		FROM `user`
+			 WHERE id = #{id}
+	</select>
+	
+	<update id="updateStatus">
+		UPDATE `user` SET 
+			`status` = #{status},
+			updateTime = now()
+		WHERE id = #{id} 			
+	</update>
+	
+	<update id="updateThirdKeyById">
+		UPDATE `user` SET 
+			thirdKey = #{thirdKey},
+			updateTime = now()
+		WHERE id = #{id} 			
+	</update>
+	
+	<update id="updateOccType">
+		UPDATE `user` SET 
+			occType = #{occType},
+			updateTime = now()
+		WHERE id = #{id} 			
+	</update>
+	
+	<select id="getInfoForUserCenter" parameterType="java.lang.Long" resultType="com.finger.birds.db.po.user.UserCenterPO">
+		SELECT 
+			ui.nickname,
+			u.`id` AS userId,
+			ui.`companyName`,
+			ui.`headImage`,
+			ui.`sex`,
+			ui.`createTime`,
+			ui.`schoolName`,
+			ui.`majorName`,
+			ui.`occupationName`,
+			ui.`intro`,
+			ui.tradeName,
+			IFNULL(uim.`money`,0) AS totalIncome,
+			COUNT(pra.`id`) AS totalProject,
+			u.userType,
+			u.`status`,
+			u.occType
+		FROM 
+			`user` u
+		INNER JOIN user_info ui ON u.`id` = ui.`userId`
+		INNER JOIN user_income uim ON uim.`userId` = u.`id`
+		LEFT JOIN project_apply pa ON pa.userId = u.id
+		LEFT JOIN project_ref_apply pra ON pra.`applyId` = pa.id
+		LEFT JOIN project_sumup ps ON ps.`userId` = u.`id` AND ps.type=1
+		WHERE u.id = #{userId}
+	</select>
+	
+	<select id="getCount" resultType="java.lang.Integer" parameterType="java.lang.Integer">
+		SELECT
+			COUNT(id)
+		FROM `user`
+			WHERE 1=1 AND userType = 1
+			<if test="occType==0">
+				AND occType = 0
+			</if>
+			<if test="occType!=0">
+				AND (occType &amp; #{occType}) > 0
+			</if>
+	</select>
+	
+	<select id="getAvgScore" resultType="java.math.BigDecimal" parameterType="java.lang.Long">
+		SELECT 
+			SUM(commentScore)/COUNT(1)
+			FROM user_comment
+			WHERE tUserId = #{tUsesrId}
+		GROUP BY tUserId
+	</select>
+	
+	<select id="getTypeByUcode" parameterType="java.lang.String" resultType="byte">
+		SELECT 
+			`type`
+		FROM ucode
+			WHERE `code` = #{ucode}
+		FOR UPDATE
+	</select>
+	
+	<select id="getUserByUcode" parameterType="java.lang.String" resultType="com.finger.birds.model.user.User">
+		SELECT 
+			*
+		FROM `user`
+			WHERE `code` = #{ucode}
+	</select>
+	
+	<update id="useUcode" parameterType="java.lang.String">
+		UPDATE ucode SET used = 1 WHERE `code` = #{ucode} AND used = 0
+	</update>
+	
+	<select id="checkPhone" parameterType="java.lang.String" resultType="int">
+		SELECT COUNT(1) FROM `user` WHERE phone = #{phone}
+	</select>
+	
+	<select id="queryOB" resultType="com.finger.birds.db.po.user.UserCenterPO">
+		SELECT 
+			ui.nickname,
+			u.`id` AS userId,
+			ui.`companyName`,
+			ui.`headImage`,
+			ui.`sex`,
+			ui.`createTime`,
+			ui.`schoolName`,
+			ui.`majorName`,
+			ui.`occupationName`,
+			ui.`intro`,
+			ui.tradeName,
+			IFNULL(uim.`totalMoney`,0) AS totalIncome,
+			u.userType,
+			u.`status`,
+			u.occType,
+			ui.majorName,
+			ui.resTxt,
+			ui.place
+		FROM 
+			`user` u
+		INNER JOIN user_info ui ON u.`id` = ui.`userId`
+		INNER JOIN user_income uim ON uim.`userId` = u.`id`
+		<if test="bean.cuserId != null">
+		INNER JOIN user_concern uc ON uc.`userId` = u.`id` AND uc.`tUserId` = #{bean.cuserId}
+		</if>
+		WHERE 1=1 
+		<if test="bean.occType != null and bean.occType != 0">
+			AND (u.occType &amp; #{bean.occType}) &gt; 0
+		</if>
+		<if test="bean.userType != null and bean.userType != -1">
+			AND u.userType = #{bean.userType}
+		</if>
+		<if test="bean.occType != null and bean.occType == 0">
+			AND u.occType = 0
+		</if>
+		<if test="bean.isHot != null and bean.isHot == 1">
+			AND u.isHot = 1
+		</if>
+		<if test="bean.cuserId != null">
+		ORDER BY uc.createTime DESC
+		</if>
+		<if test="bean.cuserId == null and bean.isHot == 1">
+		ORDER BY ui.updateTime DESC
+		</if>
+		<if test="start!=null and pageSize!=null">
+			LIMIT #{start}, #{pageSize}
+		</if>
+	</select>
+	
+	<select id="queryOBCount" parameterType="com.finger.birds.db.bean.UserQueryBean" resultType="int">
+		SELECT 
+			COUNT(1)
+		FROM 
+			`user` u
+		INNER JOIN user_info ui ON u.`id` = ui.`userId`
+		INNER JOIN user_income uim ON uim.`userId` = u.`id`
+		<if test="bean.cuserId != null">
+		INNER JOIN user_concern uc ON uc.`userId` = u.`id` AND uc.`tUserId` = #{bean.cuserId}
+		</if>
+		WHERE 1=1 
+		<if test="bean.occType != null and bean.occType != 0">
+			AND (u.occType &amp; #{bean.occType}) &gt; 0
+		</if>
+		<if test="bean.occType != null and bean.occType == 0">
+			AND u.occType = 0
+		</if>
+		<if test="bean.isHot != null and bean.isHot == 1">
+			AND u.isHot = 1
+		</if>
+		<if test="bean.userType != null and bean.userType != -1">
+			AND u.userType = #{bean.userType}
+		</if>
+	</select>
+	
+	<select id="searchByStart" resultType="com.finger.birds.db.po.user.UserSearchPO">
+		SELECT
+			id,account,phone,source,createTime,updateTime,code
+		FROM `user`
+			 WHERE userType = 1
+			 	AND code like #{bean.start} 
+			 order by updateTime DESC
+			 Limit 0,5
+	</select>
+	
+	<select id="getUserExt" parameterType="java.lang.Long" resultType="com.finger.birds.db.po.user.UserExtPO">
+		SELECT
+			uim.money,
+			uim.totalMoney,
+			(SELECT COUNT(1) FROM `order` WHERE tuserId = #{userId} AND (`status` = 2 OR `status`= 4)) AS orderNum
+		FROM `user` u
+		INNER JOIN user_income uim WHERE u.id = uim.userId AND u.id = #{userId}
+	</select>
+	
+	<update id="updateUser" parameterType="com.finger.birds.model.user.User">
+		UPDATE user SET 
+		updateTime = now(),
+		phone = #{bean.phone},
+		thirdKey = #{bean.thirdKey},
+		occType = #{bean.occType},
+		WHERE id = #{bean.id}
+	</update>
+	
+	<update id="updateUserStatus">
+		UPDATE `user` SET 
+			`occType` = #{occType},
+			`status` = #{status},
+			updateTime = now()
+		WHERE id = #{id} 			
+	</update>
+	
+	<select id="getByCode" resultType="com.finger.birds.model.user.User" parameterType="java.lang.String">
+		SELECT
+			id, account, userType, phone, source, status, createTime, updateTime, thirdKey, code, occType, isHot
+		FROM `user`
+			 WHERE code = #{code}
+	</select>
+	
+	<select id="checkUcode" resultType="java.lang.Integer"  parameterType="java.lang.String">
+		SELECT count(*)
+		FROM `ucode`
+			 WHERE code = #{code}
+			 and used = false
+	</select>
+
+	<select id="login" resultType="com.finger.birds.db.po.user.AdminUserPO"  parameterType="java.lang.String">
+		SELECT *
+		FROM `admin`
+			 WHERE username = #{username}
+			 and password = #{password}
+	</select>
+
+	<delete id="deleteById" parameterType="java.lang.Long">
+		DELETE from `user` 
+		WHERE id = #{id}
+	</delete>
+	
+	<select id="getList" resultType="com.finger.birds.db.po.user.UserCenterPO">
+		SELECT 
+			ui.nickname,
+			u.`id` AS userId,
+			ui.`companyName`,
+			ui.`headImage`,
+			ui.`sex`,
+			ui.`createTime`,
+			ui.`schoolName`,
+			ui.`majorName`,
+			ui.`occupationName`,
+			ui.`intro`,
+			ui.tradeName,
+			IFNULL(uim.`totalMoney`,0) AS totalIncome,
+			u.code,
+			u.userType,
+			u.`status`,
+			u.occType,
+			ui.majorName,
+			ui.resTxt,
+			ui.place
+		FROM 
+			`user` u
+		INNER JOIN user_info ui ON u.`id` = ui.`userId`
+		INNER JOIN user_income uim ON uim.`userId` = u.`id`
+		<if test="bean.cuserId != null">
+		INNER JOIN user_concern uc ON uc.`userId` = #{bean.cuserId} AND uc.`tUserId` = u.`id`
+		</if>
+		WHERE 1=1 
+		<if test="bean.occType != null and bean.occType != 0">
+			AND (u.occType &amp; #{bean.occType}) &gt; 0
+		</if>
+		<if test="bean.userType != null and bean.userType != -1">
+			AND u.userType = #{bean.userType}
+		</if>
+		<if test="bean.occType != null and bean.occType == 0">
+			AND u.occType = 0
+		</if>
+		<if test="bean.isHot != null and bean.isHot == 1">
+			AND u.isHot = 1
+		</if>
+		ORDER BY u.createTime
+		<if test="start!=null and pageSize!=null">
+			LIMIT #{start}, #{pageSize}
+		</if>
+	</select>
+	
+	<select id="getListCount" parameterType="com.finger.birds.db.bean.UserQueryBean" resultType="int">
+		SELECT 
+			COUNT(1)
+		FROM 
+			`user` u
+		INNER JOIN user_info ui ON u.`id` = ui.`userId`
+		INNER JOIN user_income uim ON uim.`userId` = u.`id`
+		<if test="bean.cuserId != null">
+		INNER JOIN user_concern uc ON uc.`userId` = #{bean.cuserId} AND uc.`tUserId` = u.`id`
+		</if>
+		WHERE 1=1 
+		<if test="bean.occType != null and bean.occType != 0">
+			AND (u.occType &amp; #{bean.occType}) &gt; 0
+		</if>
+		<if test="bean.occType != null and bean.occType == 0">
+			AND u.occType = 0
+		</if>
+		<if test="bean.isHot != null and bean.isHot == 1">
+			AND u.isHot = 1
+		</if>
+		<if test="bean.userType != null and bean.userType != -1">
+			AND u.userType = #{bean.userType}
+		</if>
+	</select>
+	
+	<select id="searchByKeywords" resultType="com.finger.birds.db.po.user.UserCenterPO">
+		SELECT 
+			ui.nickname,
+			u.`id` AS userId,
+			ui.`companyName`,
+			ui.`headImage`,
+			ui.`sex`,
+			ui.`createTime`,
+			ui.`schoolName`,
+			ui.`majorName`,
+			ui.`occupationName`,
+			ui.`intro`,
+			ui.tradeName,
+			IFNULL(uim.`money`,0) AS totalIncome,
+			u.userType,
+			u.`status`,
+			u.occType
+			FROM `user` u
+			INNER JOIN user_info ui ON u.`id` = ui.`userId`
+			INNER JOIN user_income uim ON uim.`userId` = u.`id`
+			where 1=1
+			<if test="occType != null and occType != -1">
+				and u.occType = #{occType}
+			</if>
+			<if test="tradeName != null">
+				and ui.tradeName = #{tradeName}
+			</if>
+			<if test="companyName != null">
+				and ui.companyName like "${companyName}"
+			</if>
+	</select>
+	
+	<select id="getAdminList" resultType="com.finger.birds.db.po.user.UserCenterPO">
+		SELECT 
+			ui.nickname,
+			u.`id` AS userId,
+			ui.`companyName`,
+			ui.`headImage`,
+			ui.`sex`,
+			ui.tradeName,
+			u.code,
+			u.occType,
+			iw.`id` weightId,
+			iw.gw_yx,
+			iw.gw_cp,
+			iw.gw_gl,
+			iw.gw_js,
+			iw.gw_cw,
+			iw.gw_qt,
+			iw.hy_it,
+			iw.hy_jr,
+			iw.hy_ct,
+			iw.hy_qt,
+			iw.liveness,
+			iw.hotness
+		FROM 
+			`user` u
+		INNER JOIN user_info ui ON u.`id` = ui.`userId`
+		LEFT JOIN intelligent_weight iw ON u.`id` = iw.`toId` and iw.toTable="user"
+		WHERE 1=1
+		<if test="bean.occType != null and bean.occType != 0">
+			AND (u.occType &amp; #{bean.occType}) &gt; 0
+		</if>
+		<if test="bean.userType != null and bean.userType != -1">
+			AND u.userType = #{bean.userType}
+		</if>
+		<if test="bean.occType != null and bean.occType == 0">
+			AND u.occType = 0
+		</if>
+		ORDER BY u.createTime
+		<if test="start!=null and pageSize!=null">
+			LIMIT #{start}, #{pageSize}
+		</if>
+	</select>
+	
+	<select id="getAll" resultType="com.finger.birds.db.po.user.UserInfoPO">
+		SELECT * from `user`
+	</select>
+</mapper>

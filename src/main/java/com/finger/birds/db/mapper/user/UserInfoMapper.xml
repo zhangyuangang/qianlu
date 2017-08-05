@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.finger.birds.db.dao.user.UserInfoDao">
+
+	<insert id="save" parameterType="com.finger.birds.model.user.UserInfo">
+		INSERT INTO `user_info` (userId, nickname, headImage, `sex`, createTime, updateTime, schoolName, majorName, companyName, occupationName, tradeName, `intro`, majorName2, resTxt, place, hob, workStatus, schoolName2) VALUES (
+		#{userId}, #{nickname},#{headImage},#{sex},NOW(),NOW(),#{schoolName},#{majorName}, #{companyName},#{occupationName},#{tradeName} ,#{intro}, #{majorName2}, #{resTxt}, #{place}, #{hob}, #{workStatus}, #{schoolName2})
+	</insert>
+
+	<select id="setUTF8mb4">
+		SET NAMES utf8mb4
+	</select>
+	
+	<select id="setUTF8">
+		SET NAMES utf8
+	</select>
+
+	<update id="updateByUserId" parameterType="com.finger.birds.model.user.UserInfo">
+		UPDATE `user_info` SET 
+			<if test="nickname != null">
+			`nickname` = #{nickname}, 
+			</if>
+			<if test="headImage != null">
+			`headImage` = #{headImage}, 
+			</if>
+			<if test="schoolName != null">
+			`schoolName` = #{schoolName}, 
+			</if>
+			<if test="majorName != null">
+			`majorName` = #{majorName}, 
+			</if>
+			<if test="companyName != null">
+			`companyName` = #{companyName}, 
+			</if>
+			<if test="occupationName != null">
+			`occupationName` = #{occupationName}, 
+			</if>
+			<if test="tradeName != null">
+			`tradeName` = #{tradeName}, 
+			</if>
+			<if test="intro != null">
+			`intro` = #{intro}, 
+			</if>
+			<if test="majorName2 != null">
+			`majorName2` = #{majorName2}, 
+			</if>
+			<if test="resTxt != null">
+			`resTxt` = #{resTxt}, 
+			</if>
+			<if test="place != null">
+			`place` = #{place}, 
+			</if>
+			<if test="hob != null">
+			`hob` = #{hob}, 
+			</if>
+			<if test="workStatus != null">
+			`workStatus` = #{workStatus}, 
+			</if>
+			<if test="schoolName2 != null">
+			`schoolName2` = #{schoolName2}, 
+			</if>
+			`updateTime` = now()
+		WHERE userId = #{userId}
+	</update>
+	
+	<select id="getByUserId" parameterType="java.lang.Long" resultType="com.finger.birds.model.user.UserInfo">
+		SELECT
+			ui.id, 
+			ui.userId, 
+			ui.nickname, 
+			ui.headImage, 
+			ui.`sex`,
+			ui.`createTime`,
+			ui.`updateTime`,
+			ui.schoolName,
+			ui.majorName,
+			ui.companyName,
+			ui.occupationName,
+			ui.tradeName,
+			ui.intro,
+			ui.majorName2,
+			ui.resTxt,
+			ui.place,
+			ui.hob,
+			ui.workStatus,
+			ui.schoolName2,
+			u.thirdKey,
+			u.code
+		FROM
+			`user_info` ui
+			left join `user` u on ui.userId=u.id
+		WHERE userId = #{userId}
+	</select>
+	
+	
+	<update id="updateUserInfo" parameterType="com.finger.birds.db.bean.UserInfoBean">
+		UPDATE user_info SET 
+		updateTime = now(),
+		nickname = #{bean.nickname},
+		headImage = #{bean.headImage},
+		sex = #{bean.sex},
+		schoolName = #{bean.schoolName},
+		majorName = #{bean.majorName},
+		companyName = #{bean.companyName},
+		occupationName = #{bean.occupationName},
+		tradeName = #{bean.tradeName},
+		intro = #{bean.intro},
+		majorName2 = #{bean.majorName2},
+		resTxt = #{bean.resTxt},
+		place = #{bean.place},
+		hob = #{bean.hob},
+		workStatus = #{bean.workStatus},
+		schoolName2 = #{bean.schoolName2}
+		
+		WHERE userId = #{bean.userId}
+	</update>
+	
+	<insert id="addUserInfo" parameterType="com.finger.birds.db.bean.UserInfoBean">
+		insert into user_info (userId, updateTime, nickname, headImage, sex, schoolName, majorName, companyName, occupationName, tradeName, intro, majorName2, resTxt, place, hob, workStatus, schoolName2)
+						values(#{bean.userId},now(),#{bean.nickname},#{bean.headImage},#{bean.sex},#{bean.schoolName},#{bean.majorName},#{bean.companyName},#{bean.occupationName},#{bean.tradeName},#{bean.intro},#{bean.majorName2},#{bean.resTxt},#{bean.place},#{bean.hob},#{bean.workStatus},#{bean.schoolName2})
+	</insert>
+
+	<delete id="deleteByUserId" parameterType="java.lang.Long">
+		DELETE from `user_info` 
+		WHERE userId = #{id}
+	</delete>
+	
+</mapper>

@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.finger.birds.db.dao.article.ArticleDao">
+	
+	<select id="getArticleList" resultType="com.finger.birds.db.po.article.ArticleListPO">
+		SELECT 
+			a.id,
+			a.title,
+			a.tips1,
+			a.tips2,
+			a.tips3,
+			a.tips4,
+			a.tips5,
+			a.headImg,
+			a.intro,
+			a.content,
+			a.userId,
+			a.viewTimes,
+			a.starTimes,
+			a.commentTimes,
+			u.code,
+			ui.nickname,
+			ui.headImage
+		FROM article a
+		LEFT JOIN `user` u ON a.userId = u.id
+		LEFT JOIN `user_info` ui ON a.userId = ui.userId
+		WHERE a.isDelete=0
+			<if test="bean.userId != null">
+				AND a.userId = #{bean.userId} 
+			</if>
+			ORDER BY a.isTop DESC,a.createTime DESC
+		<if test="start!=null and pageSize!=null">
+			LIMIT #{start}, #{pageSize}
+		</if>
+	</select>
+	
+	<select id="getArticleAdminList" resultType="com.finger.birds.db.po.article.ArticleListPO">
+		SELECT 
+			a.id,
+			a.title,
+			a.headImg,
+			a.intro,
+			a.userId,
+			a.viewTimes,
+			a.starTimes,
+			a.commentTimes,
+			u.code,
+			iw.`id` weightId,
+			iw.gw_yx,
+			iw.gw_cp,
+			iw.gw_gl,
+			iw.gw_js,
+			iw.gw_cw,
+			iw.gw_qt,
+			iw.hy_it,
+			iw.hy_jr,
+			iw.hy_ct,
+			iw.hy_qt,
+			iw.hotness
+		FROM article a
+		LEFT JOIN `user` u ON a.userId = u.id
+		LEFT JOIN intelligent_weight iw ON a.`id` = iw.`toId` and iw.toTable="article"
+		WHERE a.isDelete=0
+			<if test="bean.userId != null">
+				AND a.userId = #{bean.userId} 
+			</if>
+			ORDER BY a.isTop DESC,a.createTime DESC
+		<if test="start!=null and pageSize!=null">
+			LIMIT #{start}, #{pageSize}
+		</if>
+	</select>
+	
+	<select id="getArticleListCount" resultType="java.lang.Integer">
+		SELECT 
+			count(1)
+		FROM article
+		WHERE isDelete=0
+			<if test="bean.userId != null">
+				AND userId = #{bean.userId} 
+			</if>
+	</select>
+	
+	<select id="getById" resultType="com.finger.birds.db.po.article.ArticlePO">
+		SELECT
+			a.*,
+			ui.nickname,
+			ui.headImage,
+			ui.majorName,
+			ui.companyName,
+			ui.schoolName,
+			ui.occupationName
+		FROM article a
+			INNER JOIN user_info ui ON a.userId = ui.userId
+		WHERE a.id = #{id}
+	</select>
+	
+	<insert id="add" parameterType="com.finger.birds.db.bean.ArticleBean">
+		INSERT INTO article (`userId`, `title`, `tips1`, `tips2`, `tips3`, `tips4`, `tips5`, `headImg`, `intro`, `content`, `createTime`, `adminId`, `updateTime`, `viewTimes`) 
+					VALUES (#{bean.userId}, #{bean.title}, #{bean.tips1}, #{bean.tips2}, #{bean.tips3}, #{bean.tips4}, #{bean.tips5}, #{bean.headImg}, #{bean.intro}, #{bean.content}, now(), #{bean.adminId}, now(), 0)
+	</insert>
+	
+	<update id="edit" parameterType="java.lang.Long">
+		update article set userId = #{userId,jdbcType=BIGINT} where id = #{id,jdbcType=BIGINT}
+	</update>
+	
+	<update id="delete" parameterType="java.lang.Long">
+		update article set isDelete=1
+		 where id = #{id,jdbcType=BIGINT}
+	</update>
+
+	<select id="getUserIdById" parameterType="java.lang.Long" resultType="java.lang.Long">
+		SELECT userId FROM article
+		WHERE id = #{bean.articleId}
+	</select>
+	
+</mapper>

@@ -1,0 +1,67 @@
+html,body{height: 100%;overflow: hidden;-webkit-tap-highlight-color:transparent;outline: none;-webkit-user-select:none;}
+body{display: -webkit-box;-webkit-box-orient: vertical;height: 100%;}
+.wrapper{-webkit-box-flex: 1;position: relative;overflow:auto;-webkit-overflow-scrolling;}
+.scroll{overflow: hidden;}
+.kong{width:100%;height:1.5rem;}
+.kong1{width:100%;height:1rem;}
+header{width:100%;height: 7rem;overflow: hidden;}
+.modify{width: 2rem; height: 2rem;position: absolute;background: url(../../img/bianji.png) no-repeat;
+background-size:25px 25px ;right: 5%;top: 16px;}
+.modify span{color: #fff;font-size: 1rem;line-height: 2rem;overflow: hidden;}
+.person_pic{width:5rem;height: 5rem;margin-left:1rem;position: relative;float: left;margin-top: .3rem;overflow: hidden;border-radius: 100%;}
+.allst{position:absolute;width: 1.5rem;height: 1.5rem;background: url(../../img/star.png) no-repeat;background-size: 20px 20px;top:82px;left: 66px;}
+.person_text{width: 60%;height: auto;float: left;margin-left: 1rem;}
+.person_text h2{margin: 0;font-family:"Helvetica Neue" ;}
+.name{font-size: 1.5rem;color: #3A3A3A;}
+.zhiwei{font-size: 1.5rem;color: #3A3A3A;margin-left: 1rem;}
+.person_text p{font-size: .75rem;color: #7C7C7C;margin:.5rem 0 0 0;font-weight: 600;}
+.address{margin-left: 1rem;margin-right: 1rem;}
+.interest{margin-left: 1rem;}
+.line{display: block;width:100%;height: 1px;background: #e7e7e7;}
+/**/
+.income{width: 100%;height: auto;position: relative;overflow: hidden;}
+.income span{font-size: .75rem;color: #7C7C7C;text-align: center;}
+.allin{margin-left: 6.5%;}
+.answers{margin-left: 18px;}
+.pcoffee{margin-left: 18px;}
+.pcoffee:after{content: "";position: absolute;width: 1.2rem;height: 1.2rem;background: url(../../img/yiwen.png) no-repeat;background-size:18px 18px;right: 1.1rem;top: 4px;}
+.school{width: 100%;height: 3rem;background: #f6f5f5;padding: 0 5%;line-height: 3rem;display:flex;}
+.school span{float:left;font-size: .75rem;color: #7C7C7C;flex:1;text-indent:-12px;}
+.school span i{margin-left: .8rem;}
+.school span:nth-of-type(1) i{margin-left: .7rem;}
+.sline{width:1px;height: 10.3px;display: inline-block;background: #C0C0C0;margin-top: 1.2rem;margin-left: .7rem;}
+.school_{margin-left: .2rem;}
+/**/
+.persosn_introduction{width: 100%;min-height: 5rem;padding: 0 5%;font-size: .75rem;color: #3a3a3a;overflow: hidden;}
+.persosn_introduction span{margin-top: 1rem;display:block;}
+.persosn_introduction p{width: 100%;line-height: 1.5rem;margin-top: .9rem;text-align:justify;}
+.visitor{width: 100%;height:1.5rem;padding: 0 5%;font-size: .75rem;color: #7C7C7C;}
+.visitor span{float: left;}
+.visitor_pic{float:left;width: 77%;height:auto;margin-left: 1rem;line-height: 1.3rem;}
+.pic_fang{width: 3rem;height: 3rem;border-radius: 100%;margin-top: -.8rem;float: left;overflow:hidden;}
+.ziliao{width: 100%;padding: 0 5%;}
+.ziliao h2{width:100%;font-size:1rem;font-weight: 600;margin:0 auto;letter-spacing: .1rem;color:#595959;overflow: hidden;line-height:1.5rem;}
+.ziliao p{width:100%;margin: 0 auto;font-size:.75rem;letter-spacing: .1rem;color:#7C7C7C;line-height: 1.7rem;}
+.footer{width: 100%;height: 5rem;color: #c0c0c0;text-align: center;line-height: 1.5rem;font-size: .75rem;}
+footer .as{flex: 1;background:none;outline:none;-webkit-tap-highlight-color:rgba(0,0,0,0);}
+.home a > .img{display:block;width: 20px;height:20px;background: url('../../img/qianluhome.png') no-repeat;background-size:100% 100%;text-align: center;margin: .3rem auto;}
+.chat a > .img{display:block;width: 20px;height:20px;background: url('../../img/chat.png') no-repeat;background-size:100% 100%;text-align: center;margin: .3rem auto; }
+.person a > .img{display:block;width: 20px;height:20px;background: url('../../img/my1.png') no-repeat;background-size:100% 100%;text-align: center;margin: .3rem auto;}
+.person a > .nav{color:#fc8f2a;}
+.as{text-align: center;}
+.nav{font-size:.7rem;color: #7c7c7c;display: block;}
+footer{height: 3.2rem;position: relative;display: flex;background: #fff;border-top:1px solid #E5E5E5;}
+@media only screen and (min-width:414px ) {
+	.school{padding: 0 4%}
+	.person_text p{font-size: .85rem;}
+	.income span{font-size: .85rem;}
+	.school span{font-size: .85rem;}
+	.persosn_introduction{font-size: .85rem;}
+	.visitor{font-size: .85rem;}
+	.sline{margin-left: 1rem;}
+	.pcoffee:after{top: 1px;}
+	.footer{font-size: .85rem;}
+	.ziliao p{font-size: .87rem;}
+	.tix{height: 65%;}
+	.tix_ p{margin-top: 1rem;}
+}
