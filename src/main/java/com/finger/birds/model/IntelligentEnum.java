@@ -1,7 +1,7 @@
 package com.finger.birds.model;
 
 public enum IntelligentEnum {
-	
+
 	//只增加活跃度的
 	Liveness修改个人信息(10001, 40),
 	Liveness取消Article点赞(10002, 10),

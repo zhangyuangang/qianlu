@@ -97,11 +97,11 @@ public class OrderScheduler {
 	    	Long tmsgId = orderService.checkQianlu(tuserId, userId);
 
 	    	//给大白发消息
-			String tdataStr = "{\"first\":{\"value\":\"尊敬的" + tnickname + "\"}, \"OrderSn\":{\"value\":\"" + orderCode + "\"}, \"OrderStatus\":{\"value\":\"交流即将开始\"}, \"remark\":{\"value\":\"离本次交流开始还有5min，您可以提前进入聊天窗口了。\"}}";
+			String tdataStr = "{\"first\":{\"value\":\"尊敬的" + tnickname + "\"}, \"OrderSn\":{\"value\":\"" + orderCode + "\"}, \"OrderStatus\":{\"value\":\"交谈马上开始\"}, \"remark\":{\"value\":\"还有5min本次交谈开始，您可以提前进入交谈窗口。\"}}";
 			wechatTemplateUtils.sendMsg(CommConstant.TEMAPLATE_ID_TIPS, JSONObject.fromObject(tdataStr), "http://m.upbirds.com/chat.html?selfId=" + tuserId +"&tId=" + userId + "&id=" + tmsgId, topenId, null);
 
 			//给小白发消息
-			String dataStr = "{\"first\":{\"value\":\"尊敬的" + nickname + "\"}, \"OrderSn\":{\"value\":\"" + orderCode + "\"}, \"OrderStatus\":{\"value\":\"交流即将开始\"}, \"remark\":{\"value\":\"离本次交流开始还有5min，您可以提前进入聊天窗口准备您的问题。\"}}";
+			String dataStr = "{\"first\":{\"value\":\"尊敬的" + nickname + "\"}, \"OrderSn\":{\"value\":\"" + orderCode + "\"}, \"OrderStatus\":{\"value\":\"交谈马上开始\"}, \"remark\":{\"value\":\"还有5min本次交谈开始，您可以提前进入交谈窗口。\"}}";
 			wechatTemplateUtils.sendMsg(CommConstant.TEMAPLATE_ID_TIPS, JSONObject.fromObject(dataStr), "http://m.upbirds.com/chat.html?selfId=" + userId +"&tId=" + tuserId + "&id=" + msgId, openId, null);
 		}
 		log.info("-----------------定时发送提醒模板结束-------------------");

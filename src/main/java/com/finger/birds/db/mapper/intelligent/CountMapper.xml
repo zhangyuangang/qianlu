@@ -32,7 +32,7 @@
 		where 
 			(toUserId is not null
 			and createTime &gt; DATE_ADD(Now(),INTERVAL - 1 hour) 
-			and toTable &gt;&lt; "user" ) 
+			and toTable != "user" ) 
 			or toTable = "qianlu"
 	</select>
 	

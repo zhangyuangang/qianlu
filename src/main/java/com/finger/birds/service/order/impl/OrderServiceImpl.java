@@ -132,7 +132,7 @@ public class OrderServiceImpl extends BaseService implements OrderService{
 			UserIncomeLog incomeLog = new UserIncomeLog();
 			{
 				incomeLog.setFlow(new Byte("1"));
-				incomeLog.setMoney(payLog.getMoney());
+				incomeLog.setMoney(payLog.getMoney().subtract(CommConstant.RAKE));
 				incomeLog.setPayLogId(payLog.getId());
 				incomeLog.setType((short)0);
 				incomeLog.setUserId(payLog.getUserId());
@@ -150,8 +150,9 @@ public class OrderServiceImpl extends BaseService implements OrderService{
 			UserInfo userInfoSmall = userInfoDao.getByUserId(order.getUserId());
 			String openid = user.getThirdKey();
 //			String openid = "oCiL107dTXoNCNzWDjfBeHQWOqgE";
-			String type = userInfoSmall.getCode()==null?"小白":"大白";
-			String dataStr = "{\"first\":{\"value\":\"尊敬的" + userInfo.getNickname() + "\"}, \"OrderSn\":{\"value\":\"" + orderCode + "\"}, \"OrderStatus\":{\"value\":\"" + type + userInfoSmall.getNickname() + "已支付\"}, \"remark\":{\"value\":\"请您尽快选中与小白交流的时段！\"}}";
+			//String type = userInfoSmall.getCode()==null?"小白":"大白";
+			//String dataStr = "{\"first\":{\"value\":\"尊敬的" + userInfo.getNickname() + "\"}, \"OrderSn\":{\"value\":\"" + orderCode + "\"}, \"OrderStatus\":{\"value\":\"" + type + userInfoSmall.getNickname() + "已支付50元\"}, \"remark\":{\"value\":\"请您选择今天与对方的交流时段，谢谢！\"}}";
+			String dataStr = "{\"first\":{\"value\":\"尊敬的" + userInfo.getNickname() + "\"}, \"OrderSn\":{\"value\":\"" + orderCode + "\"}, \"OrderStatus\":{\"value\":\"大白您好，"+userInfoSmall.getNickname()+"已支付50元。请您选择今天与对方的交流时段，谢谢！\"}, \"remark\":{\"value\":\"\"}}";
 			wechatTemplateUtils.sendMsg(CommConstant.TEMAPLATE_ID_TO_DABAI_CHOOSE, JSONObject.fromObject(dataStr), "http://m.upbirds.com/order/changeTime.html?orderId=" + order.getId(), openid, session);
 			//给小白发消息
 			String tdataStr = "{\"first\":{\"value\":\"尊敬的" + userInfoSmall.getNickname() + "\"}, \"OrderSn\":{\"value\":\"" + orderCode + "\"}, \"OrderStatus\":{\"value\":\"等待大白接受\"}, \"remark\":{\"value\":\"您已下单成功，等待大白选择交流时间\"}}";
@@ -162,9 +163,9 @@ public class OrderServiceImpl extends BaseService implements OrderService{
 			UserInfo userInfoSmall = userInfoDao.getByUserId(order.getUserId());
 			String openid = user.getThirdKey();
 //			String openid = "oCiL107dTXoNCNzWDjfBeHQWOqgE";
-			String type = userInfoSmall.getCode()==null?"小白":"大白";
-			String dataStr = "{\"first\":{\"value\":\"尊敬的" + userInfo.getNickname() + "\"}, \"OrderSn\":{\"value\":\"" + order.getOrderCode() + "\"}, \"OrderStatus\":{\"value\":\"" + type + userInfoSmall.getNickname() + "已支付\"}, \"remark\":{\"value\":\"小白续单成功，请您继续与小白交流！\"}}";
-			wechatTemplateUtils.sendMsg(CommConstant.TEMAPLATE_ID_TO_DABAI_CHOOSE, JSONObject.fromObject(dataStr), "http://m.upbirds.com/order/changeTime.html?orderId=" + order.getId(), openid, session);
+//			String type = userInfoSmall.getCode()==null?"小白":"大白";
+//			String dataStr = "{\"first\":{\"value\":\"尊敬的" + userInfo.getNickname() + "\"}, \"OrderSn\":{\"value\":\"" + order.getOrderCode() + "\"}, \"OrderStatus\":{\"value\":\"" + type + userInfoSmall.getNickname() + "已支付\"}, \"remark\":{\"value\":\"小白续单成功，请您继续与小白交流！\"}}";
+//			wechatTemplateUtils.sendMsg(CommConstant.TEMAPLATE_ID_TO_DABAI_CHOOSE, JSONObject.fromObject(dataStr), "http://m.upbirds.com/order/changeTime.html?orderId=" + order.getId(), openid, session);
 		}
 	}
 	
@@ -179,7 +180,7 @@ public class OrderServiceImpl extends BaseService implements OrderService{
 		UserPayLog payLog = new UserPayLog();
 		{
 			payLog.setSynCallbackTime(now);
-			payLog.setMoney(order.getPrice());
+			payLog.setMoney(order.getPrice().subtract(CommConstant.RAKE));
 			payLog.setTargetType((short)1);
 			payLog.setTargetId(orderId);
 			payLog.setUserId(order.getUserId());
@@ -257,14 +258,14 @@ public class OrderServiceImpl extends BaseService implements OrderService{
 			UserPayLog payLog = userIncomeDao.getPayLogByCode(order.getId());
 			{//计算收入
 				userIncomeDao.updateLogStatusByPayLogId(payLog.getId(), new Byte("1"));
-				userIncomeDao.updateByUserId(order.getTuserId(), order.getPrice(), 1);
+				userIncomeDao.updateByUserId(order.getTuserId(), order.getPrice().subtract(CommConstant.RAKE), 1);
 			}
 			{//给小白发消息
 				UserInfo user = userInfoDao.getByUserId(order.getUserId());
 				String openId = user.getThirdKey();
 				
 				TimeTypeEnum timeTypeEnum = TimeTypeEnum.get(timeType);
-				String dataStr = "{\"name\":{\"value\":\"" + CommConstant.COMM_GOODS_NAME + "\"}, \"remark\":{\"value\":\"大白已经确认时段[" + timeTypeEnum.getName() + "]！为提高服务质量，我们会提前5min开通聊天窗口，以便双方的快速认识。\"}}";
+				String dataStr = "{\"name\":{\"value\":\"" + CommConstant.COMM_GOODS_NAME + "\"}, \"remark\":{\"value\":\"大白已经确认时段[" + timeTypeEnum.getName() + "]！为提高服务质量，前路提前5min开通交谈窗口，以便双方快速认识。\"}}";
 				wechatTemplateUtils.sendMsg(CommConstant.TEMPLATE_ID_TO_XIAOBAI_SUCCESS, JSONObject.fromObject(dataStr), "http://m.upbirds.com/chat.html?selfId=" + order.getUserId() +"&tId=" + order.getTuserId() + "&id=" + msgId, openId, null);
 			}
 		} else {
@@ -299,7 +300,7 @@ public class OrderServiceImpl extends BaseService implements OrderService{
 		UserIncomeLog incomeLog = new UserIncomeLog();
 		{//退款
 			incomeLog.setFlow(new Byte("1"));
-			incomeLog.setMoney(payLog.getMoney());
+			incomeLog.setMoney(payLog.getMoney().subtract(CommConstant.RAKE));
 			incomeLog.setPayLogId(payLog.getId());
 			incomeLog.setType((short)-1);
 			incomeLog.setUserId(payLog.getUserId());
@@ -532,13 +533,13 @@ public class OrderServiceImpl extends BaseService implements OrderService{
 			UserPayLog payLog = userIncomeDao.getPayLogByCode(order.getId());
 			{//计算收入
 				userIncomeDao.updateLogStatusByPayLogId(payLog.getId(), new Byte("1"));
-				userIncomeDao.updateByUserId(order.getTuserId(), order.getPrice(), 1);
+				userIncomeDao.updateByUserId(order.getTuserId(), order.getPrice().subtract(CommConstant.RAKE), 1);
 			}
 			{//给小白发消息
 				UserInfo user = userInfoDao.getByUserId(order.getUserId());
 				String openId = user.getThirdKey();
 				
-				String dataStr = "{\"name\":{\"value\":\"" + CommConstant.COMM_GOODS_NAME + "\"}, \"remark\":{\"value\":\"大白已经同意您得续单请求\"}}";
+				String dataStr = "{\"name\":{\"value\":\"" + CommConstant.COMM_GOODS_NAME + "\"}, \"remark\":{\"value\":\"大白已经接受您的续单要求\"}}";
 				wechatTemplateUtils.sendMsg(CommConstant.TEMPLATE_ID_TO_XIAOBAI_SUCCESS, JSONObject.fromObject(dataStr), "http://m.upbirds.com/chat.html?selfId=" + order.getUserId() +"&tId=" + order.getTuserId() + "&id=" + msgId, openId, null);
 			}
 		} else {
@@ -558,6 +559,13 @@ log.info("续单:申请退款成功，orderId:" + vo.getOut_trade_no() + "，tim
 				incomeLog.setUserId(payLog.getUserId());
 			}
 			userIncomeDao.addLog(incomeLog);
+			{//给小白发消息
+				UserInfo user1 = userInfoDao.getByUserId(order.getUserId());
+				String openId = user1.getThirdKey();
+				
+				String dataStr = "{\"name\":{\"value\":\"" + CommConstant.COMM_GOODS_NAME + "\"}, \"remark\":{\"value\":\"大白已经拒绝您的续单要求\"}}";
+				wechatTemplateUtils.sendMsg(CommConstant.TEMPLATE_ID_TO_XIAOBAI_SUCCESS, JSONObject.fromObject(dataStr), null, openId, null);
+			}
 		}
 		orderDao.updateById(norder, orderId);
 	}

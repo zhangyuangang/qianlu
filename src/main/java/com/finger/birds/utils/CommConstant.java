@@ -85,10 +85,13 @@ public interface CommConstant {
 	String WECHAT_PAY_ASYN_URL = "http://m.upbirds.com/order/wechatASynchroCallBack.html";
 	
 	//付款价格
-	BigDecimal PRICE = new BigDecimal("99.00");
+	BigDecimal PRICE = new BigDecimal("51.00");
 	
 	//续单价格
-	BigDecimal XUDAN_PRICE = new BigDecimal("99.00");
+	BigDecimal XUDAN_PRICE = new BigDecimal("51.00");
+	
+	//手续费
+	BigDecimal RAKE = new BigDecimal("1.00");
 	
 	//无意义，支付商品名称
 	String COMM_GOODS_NAME = "大白按需交流";
